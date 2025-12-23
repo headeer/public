@@ -1,0 +1,303 @@
+/**
+ * KPG Blog Sorting Widget Styles
+ * 
+ * Based on Prompt #13 (line 6278) from cursor_padding_po_rozwini_ciu.md
+ * Design spec: Complete dropdown with accessibility
+ * 
+ * Mobile base: 375px
+ * Desktop base: 1696px
+ * 
+ * Colors: See _kpg-colors.css for full palette
+ */
+
+@import '_kpg-colors.css';
+
+/* ============================================
+   MOBILE STYLES (base: 375px)
+   ============================================ */
+
+.kpg_sorting-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 8.5333vw; /* 32px / 375px * 100vw - from Prompt #4 */
+}
+
+.kpg_sorting-container-inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 4.2667vw; /* 16px / 375px */
+  position: relative;
+  width: 91.4667vw; /* 343px / 375px */
+  margin: 0 0 0 4.2667vw; /* 0 0 0 16px / 375px */
+}
+
+.kpg_sorting-label-wrapper {
+  flex-shrink: 0;
+}
+
+.kpg_sorting-label {
+  display: block;
+  color: #6f7b7c;
+  font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 4.2667vw; /* 16px / 375px */
+  font-weight: 300;
+  line-height: 2.9333vw; /* 11px / 375px */
+  text-align: left;
+  white-space: nowrap;
+  letter-spacing: -0.0853vw; /* -0.32px / 375px */
+}
+
+.kpg_sorting-dropdown {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.kpg_sorting-button {
+  display: flex;
+  align-items: center;
+  gap: 1.8667vw; /* 7px / 375px */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+}
+
+.kpg_sorting-selected {
+  color: #404848;
+  font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 4.2667vw; /* 16px / 375px */
+  font-weight: 500;
+  line-height: 2.9333vw; /* 11px / 375px */
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  letter-spacing: 0.2133vw; /* 0.8px / 375px */
+}
+
+.kpg_sorting-icon {
+  flex-shrink: 0;
+  width: 3.5373vw; /* 13.273px / 375px */
+  height: 2.1093vw; /* 7.91px / 375px */
+  transition: transform 0.3s ease;
+}
+
+.kpg_sorting-dropdown.active .kpg_sorting-icon {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.kpg_sorting-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 2.1333vw); /* 8px / 375px */
+  right: 0;
+  background: #ffffff;
+  border: 0.2667vw solid #e3ebec; /* 1px / 375px */
+  border-radius: 2.1333vw; /* 8px / 375px */
+  padding: 2.1333vw 0; /* 8px 0 / 375px */
+  min-width: 43.7333vw; /* 164px / 375px */
+  box-shadow: 0 1.0667vw 2.6667vw rgba(0, 0, 0, 0.1); /* 0 4px 10px */
+  z-index: 1000;
+  list-style: none;
+  margin: 0;
+}
+
+.kpg_sorting-dropdown.active .kpg_sorting-menu {
+  display: block;
+}
+
+.kpg_sorting-menu li {
+  margin: 0;
+  padding: 0;
+}
+
+.kpg_sorting-option {
+  display: block;
+  width: 100%;
+  padding: 2.6667vw 4.2667vw; /* 10px 16px / 375px */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: #404848;
+  font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 3.2vw; /* 12px / 375px - smaller */
+  font-weight: 300;
+  line-height: 2.1333vw; /* 8px / 375px - adjusted */
+  text-transform: uppercase;
+  letter-spacing: 0.16vw; /* 0.6px / 375px - adjusted */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover state - KPG style */
+.kpg_sorting-option:hover {
+  background-color: #e3ebec; /* --kpg-gray-20 */
+  color: #404848; /* --kpg-dark */
+}
+
+/* Active state */
+.kpg_sorting-option.kpg_sorting-active {
+  font-weight: 500;
+  background-color: #e3ebec; /* --kpg-gray-20 */
+  color: #404848; /* --kpg-dark */
+}
+
+/* Override default WordPress/Elementor button styles within this widget */
+.kpg_sorting-container button[type="button"]:hover,
+.kpg_sorting-container button[type="button"]:focus {
+  background-color: transparent !important;
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.kpg_sorting-container .kpg_sorting-option:hover,
+.kpg_sorting-container .kpg_sorting-option:focus {
+  background-color: #e3ebec !important; /* --kpg-gray-20 */
+  color: #404848 !important; /* --kpg-dark */
+  text-decoration: none !important;
+}
+
+/* ============================================
+   DESKTOP STYLES (min-width: 1025px, base: 1696px)
+   ============================================ */
+
+@media screen and (min-width: 1025px) {
+  .kpg_sorting-container {
+    margin-bottom: 1.8868vw; /* 32px / 1696px * 100vw */
+  }
+
+  .kpg_sorting-container-inner {
+    width: auto;
+    margin: 0;
+    gap: 0.9434vw; /* 16px / 1696px * 100vw */
+  }
+
+  .kpg_sorting-label {
+    font-size: 0.9434vw; /* 16px / 1696px */
+    line-height: 0.6484vw; /* 11px / 1696px */
+    letter-spacing: -0.0189vw; /* -0.32px / 1696px */
+  }
+
+  .kpg_sorting-selected {
+    font-size: 0.9434vw; /* 16px / 1696px */
+    line-height: 0.6484vw; /* 11px / 1696px */
+    letter-spacing: 0.0472vw; /* 0.8px / 1696px */
+  }
+
+  .kpg_sorting-icon {
+    width: 0.7823vw; /* 13.273px / 1696px */
+    height: 0.4662vw; /* 7.91px / 1696px */
+  }
+
+  .kpg_sorting-menu {
+    top: calc(100% + 0.4717vw); /* 8px / 1696px */
+    border: 0.0590vw solid #e3ebec; /* 1px / 1696px */
+    border-radius: 0.4717vw; /* 8px / 1696px */
+    padding: 0.4717vw 0; /* 8px 0 / 1696px */
+    min-width: 9.6698vw; /* 164px / 1696px */
+    box-shadow: 0 0.2358vw 0.5896vw rgba(0, 0, 0, 0.1); /* 0 4px 10px */
+  }
+
+  .kpg_sorting-option {
+    padding: 0.5896vw 0.9434vw; /* 10px 16px / 1696px */
+    font-size: 0.7076vw; /* 12px / 1696px - smaller */
+    line-height: 0.4717vw; /* 8px / 1696px - adjusted */
+    letter-spacing: 0.0354vw; /* 0.6px / 1696px - adjusted */
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY & FOCUS STATES
+   ============================================ */
+
+/* Focus states - KPG style */
+.kpg_sorting-button:focus,
+.kpg_sorting-option:focus {
+  outline: 2px solid #404848; /* --kpg-dark */
+  outline-offset: 2px;
+}
+
+.kpg_sorting-button:focus:not(:focus-visible),
+.kpg_sorting-option:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Focus visible (keyboard navigation) */
+.kpg_sorting-button:focus-visible {
+  outline: 2px solid #404848 !important;
+  outline-offset: 2px;
+  background-color: transparent !important;
+}
+
+.kpg_sorting-option:focus-visible {
+  outline: 2px solid #404848 !important;
+  outline-offset: 2px;
+  background-color: #e3ebec !important;
+}
+
+/* ============================================
+   OVERRIDE WORDPRESS/ELEMENTOR DEFAULT STYLES
+   ============================================ */
+
+/* Reset all default button styles within this widget */
+.kpg_sorting-container button,
+.kpg_sorting-container button[type="button"],
+.kpg_sorting-container button[type="submit"] {
+  /* Reset only visual WordPress defaults - NOT typography */
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  text-decoration: none !important;
+  /* DO NOT reset: font-size, font-weight, line-height, letter-spacing */
+  /* These are set specifically for each element */
+}
+
+/* Ensure widget-specific display properties work */
+.kpg_sorting-container .kpg_sorting-button {
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  /* Other styles (font-size, etc.) are set in .kpg_sorting-button class above */
+}
+
+.kpg_sorting-container .kpg_sorting-option {
+  display: block !important;
+  width: 100% !important;
+  cursor: pointer !important;
+  /* Other styles (font-size, etc.) are set in .kpg_sorting-option class above */
+}
+
+/* Hover states - KPG colors only */
+.kpg_sorting-container button:hover,
+.kpg_sorting-container button[type="button"]:hover,
+.kpg_sorting-container button:focus,
+.kpg_sorting-container button[type="button"]:focus {
+  background-color: transparent !important;
+  color: inherit !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+.kpg_sorting-container .kpg_sorting-option:hover,
+.kpg_sorting-container .kpg_sorting-option:focus {
+  background-color: #e3ebec !important; /* --kpg-gray-20 */
+  color: #404848 !important; /* --kpg-dark */
+  text-decoration: none !important;
+}
+
+/* ============================================
+   ELEMENTOR EDITOR COMPATIBILITY
+   ============================================ */
+
+.elementor-editor-active .kpg_sorting-dropdown {
+  pointer-events: none;
+}
+
+.elementor-editor-active .kpg_sorting-button {
+  cursor: default;
+}
+

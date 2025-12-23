@@ -1,0 +1,71 @@
+/**
+ * KPG Color Palette - Global Variables
+ * 
+ * Extracted from project documentation and Figma designs
+ * Use these colors consistently across all widgets
+ * 
+ * Import this file first in all widget CSS files:
+ * @import '_kpg-colors.css';
+ */
+
+:root {
+  /* Primary Colors */
+  --kpg-yellow: #F9FF46;           /* Featured posts, highlights, CTAs */
+  --kpg-green: #0d8e67;            /* Success states, accents, links */
+  --kpg-light-green: #C0FFDD;      /* Success backgrounds, notifications */
+  
+  /* Text Colors */
+  --kpg-dark: #404848;             /* Primary text, active states (Gray-90) */
+  --kpg-dark-alt: #2d3535;         /* Alternative dark text */
+  --kpg-text-muted: #484440;       /* Muted text (titles) */
+  --kpg-text-secondary: #566263;   /* Secondary text, buttons (Gray-70) */
+  --kpg-text-tertiary: #6f7b7c;    /* Tertiary text, labels (Gray-60) */
+  --kpg-text-inactive: #a3afb0;    /* Inactive states, disabled (Gray-50) */
+  --kpg-text-subtle: #899596;      /* Very subtle text */
+  
+  /* Background Colors */
+  --kpg-bg-light: #f7f9f9;         /* Light backgrounds, page bg */
+  --kpg-bg-gray: #e3ebec;          /* Gray backgrounds, cards (Gray-20) */
+  --kpg-bg-dark: #404848;          /* Dark sections (footer, etc) */
+  --kpg-bg-white: #ffffff;         /* White cards, dropdowns */
+  
+  /* Border Colors */
+  --kpg-border-dark: #404848;      /* Primary borders */
+  --kpg-border-light: #a3afb0;     /* Light borders (Gray-50) */
+  --kpg-border-subtle: #e3ebec;    /* Subtle borders (Gray-20) */
+  
+  /* State Colors */
+  --kpg-hover-bg: #e3ebec;         /* Hover backgrounds */
+  --kpg-active-bg: #e3ebec;        /* Active backgrounds */
+  --kpg-focus-outline: #404848;    /* Focus outlines */
+  
+  /* Typography */
+  --kpg-font-primary: 'Nohemi', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --kpg-font-mono: 'DM Mono', 'Courier New', monospace;
+  
+  /* Spacing (base values - use vw in actual styles) */
+  --kpg-spacing-xs: 8px;
+  --kpg-spacing-sm: 16px;
+  --kpg-spacing-md: 32px;
+  --kpg-spacing-lg: 64px;
+  
+  /* Border Radius */
+  --kpg-radius-sm: 2px;
+  --kpg-radius-md: 8px;
+  
+  /* Transitions */
+  --kpg-transition-fast: 0.2s ease;
+  --kpg-transition-normal: 0.3s ease;
+  --kpg-transition-slow: 0.5s ease;
+  --kpg-transition-smooth: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/**
+ * Usage Examples:
+ * 
+ * color: var(--kpg-dark);
+ * background: var(--kpg-yellow);
+ * font-family: var(--kpg-font-primary);
+ * transition: background-color var(--kpg-transition-normal);
+ */
+

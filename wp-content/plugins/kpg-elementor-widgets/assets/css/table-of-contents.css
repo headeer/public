@@ -1,0 +1,173 @@
+/**
+ * KPG Table of Contents - dokładnie z Figmy
+ * 
+ * Desktop: width 392px, bg #edf2f3, DM Mono font
+ * Base: 1696px
+ */
+
+@import '_kpg-colors.css';
+
+/* DESKTOP (dokładnie z Figmy) */
+.kpg-toc-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.4151vw; /* 24px / 1696px */
+  width: 23.1132vw; /* 392px / 1696px */
+  margin: 0;
+  padding: 1.8868vw 1.8868vw 3.7736vw; /* 32px 32px 64px / 1696px */
+  background: #edf2f3; /* dokładnie z Figmy */
+  border-radius: 0.4717vw; /* 8px */
+  box-sizing: border-box;
+}
+
+.kpg-toc-container.kpg-toc-sticky {
+  position: sticky;
+  top: 2.3585vw; /* 40px default */
+}
+
+/* Header z tytułem */
+.kpg-toc-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: 1.8868vw; /* 32px / 1696px */
+  padding: 0;
+  border: none;
+  margin: 0;
+}
+
+.kpg-toc-title {
+  margin: 0;
+  height: 0.6484vw; /* 11px / 1696px */
+  font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.9434vw; /* 16px / 1696px */
+  font-weight: 500; /* bold dla tytułu */
+  line-height: 0.6484vw; /* 11px / 1696px */
+  color: #404848;
+  text-transform: uppercase;
+  white-space: nowrap;
+  letter-spacing: -0.0189vw; /* -0.32px / 1696px */
+}
+
+/* Navigation */
+.kpg-toc-nav {
+  width: 100%;
+}
+
+.kpg-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4151vw; /* 24px / 1696px - między elementami */
+}
+
+.kpg-toc-item {
+  padding: 0;
+  border: none;
+}
+
+.kpg-toc-item--h3,
+.kpg-toc-item--h4 {
+  padding-left: 0; /* bez indentacji - numery robią hierarchię */
+}
+
+/* Link */
+.kpg-toc-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.8868vw; /* 32px / 1696px */
+  color: #404848;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.kpg-toc-link:hover,
+.kpg-toc-link.active {
+  opacity: 0.7;
+}
+
+/* Number (0.1, 0.2, etc) */
+.kpg-toc-number {
+  flex-shrink: 0;
+  height: 0.6484vw; /* 11px / 1696px */
+  font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.9434vw; /* 16px / 1696px */
+  font-weight: 300;
+  line-height: 0.6484vw; /* 11px / 1696px */
+  color: #a3afb0; /* inactive gray */
+  white-space: nowrap;
+  letter-spacing: -0.0189vw; /* -0.32px / 1696px */
+}
+
+/* Text */
+.kpg-toc-text {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 14.8585vw; /* 251px / 1696px */
+  font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.9434vw; /* 16px / 1696px */
+  font-weight: 300;
+  line-height: 1.1321vw; /* 19.2px / 1696px - 120% of 16px */
+  color: #404848;
+  text-align: left;
+  letter-spacing: -0.0189vw; /* -0.32px / 1696px */
+}
+
+/* MOBILE - simpler version */
+@media screen and (max-width: 1024px) {
+  .kpg-toc-container {
+    width: 91.4667vw; /* 343px / 375px */
+    gap: 4.2667vw; /* 16px */
+    padding: 4.2667vw; /* 16px */
+    background: #edf2f3;
+    border-radius: 2.1333vw; /* 8px */
+  }
+
+  .kpg-toc-container.kpg-toc-sticky {
+    position: relative; /* nie sticky na mobile */
+  }
+
+  .kpg-toc-header {
+    gap: 4.2667vw; /* 16px */
+  }
+
+  .kpg-toc-title {
+    height: auto;
+    font-size: 4.2667vw; /* 16px */
+    line-height: 2.9333vw; /* 11px */
+    letter-spacing: -0.0853vw; /* -0.32px */
+  }
+
+  .kpg-toc-list {
+    gap: 4.2667vw; /* 16px */
+  }
+
+  .kpg-toc-link {
+    gap: 4.2667vw; /* 16px */
+  }
+
+  .kpg-toc-number {
+    height: auto;
+    font-size: 4.2667vw; /* 16px */
+    line-height: 2.9333vw; /* 11px */
+    letter-spacing: -0.0853vw; /* -0.32px */
+  }
+
+  .kpg-toc-text {
+    width: auto;
+    font-size: 4.2667vw; /* 16px */
+    line-height: 5.12vw; /* 19.2px */
+    letter-spacing: -0.0853vw; /* -0.32px */
+  }
+}
+
+/* Reset WP styles */
+.kpg-toc-container a {
+  text-decoration: none !important;
+}
+

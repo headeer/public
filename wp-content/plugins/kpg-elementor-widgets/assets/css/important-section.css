@@ -1,0 +1,145 @@
+/**
+ * KPG Important Section Widget Styles
+ * 
+ * Highlight box dla ważnych informacji
+ * Style dopasowane do KPG (light green lub gray)
+ * 
+ * Mobile base: 375px
+ * Desktop base: 1696px
+ */
+
+@import '_kpg-colors.css';
+
+/* ============================================
+   MOBILE STYLES
+   ============================================ */
+
+.kpg-important-container {
+  width: 100%;
+  max-width: 91.4667vw; /* 343px / 375px */
+  margin: 8.5333vw 4.2667vw; /* 32px 16px */
+  padding: 4.2667vw; /* 16px */
+  background: #C0FFDD; /* light green - success color */
+  border-radius: 2.1333vw; /* 8px */
+  border-left: 1.0667vw solid #0d8e67; /* 4px accent */
+  box-sizing: border-box;
+}
+
+.kpg-important-header {
+  display: flex;
+  align-items: center;
+  gap: 2.1333vw; /* 8px */
+  margin-bottom: 3.2vw; /* 12px */
+}
+
+.kpg-important-icon {
+  flex-shrink: 0;
+  width: 8.5333vw; /* 32px */
+  height: 8.5333vw;
+  border-radius: 50%;
+  background: #0d8e67; /* green */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpg-important-icon-text {
+  font-family: var(--kpg-font-primary);
+  font-size: 5.3333vw; /* 20px */
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.kpg-important-title {
+  margin: 0;
+  font-family: var(--kpg-font-primary);
+  font-size: 5.3333vw; /* 20px */
+  font-weight: 300;
+  line-height: 3.7333vw; /* 14px */
+  color: #0d8e67;
+  text-transform: uppercase;
+  letter-spacing: 0.0533vw; /* 0.2px */
+}
+
+.kpg-important-content {
+  font-family: var(--kpg-font-primary);
+  font-size: 4.2667vw; /* 16px */
+  font-weight: 300;
+  line-height: 6.4vw; /* 24px */
+  color: #404848;
+  letter-spacing: 0.0427vw; /* 0.16px */
+}
+
+.kpg-important-content p {
+  margin: 0 0 3.2vw 0; /* 0 0 12px */
+}
+
+.kpg-important-content p:last-child {
+  margin-bottom: 0;
+}
+
+.kpg-important-content ul,
+.kpg-important-content ol {
+  margin: 2.1333vw 0;
+  padding-left: 5.3333vw; /* 20px */
+}
+
+.kpg-important-content li {
+  margin-bottom: 1.0667vw; /* 4px */
+}
+
+/* ============================================
+   DESKTOP STYLES
+   ============================================ */
+
+@media screen and (min-width: 1025px) {
+  .kpg-important-container {
+    max-width: 73.1132vw; /* 1240px / 1696px */
+    margin: 3.7736vw auto; /* 64px auto */
+    padding: 1.8868vw; /* 32px */
+    border-radius: 0.4717vw; /* 8px */
+    border-left: 0.2358vw solid #0d8e67; /* 4px */
+  }
+
+  .kpg-important-header {
+    gap: 0.9434vw; /* 16px */
+    margin-bottom: 1.4151vw; /* 24px */
+  }
+
+  .kpg-important-icon {
+    width: 2.3585vw; /* 40px */
+    height: 2.3585vw;
+  }
+
+  .kpg-important-icon-text {
+    font-size: 1.4151vw; /* 24px */
+  }
+
+  .kpg-important-title {
+    font-size: 1.5330vw; /* 26px */
+    line-height: 1.8396vw; /* 31.2px */
+    letter-spacing: -0.0153vw; /* -0.26px */
+  }
+
+  .kpg-important-content {
+    font-size: 0.9434vw; /* 16px */
+    line-height: 1.4151vw; /* 24px */
+    letter-spacing: 0.0094vw; /* 0.16px */
+  }
+
+  .kpg-important-content p {
+    margin: 0 0 0.9434vw 0; /* 0 0 16px */
+  }
+
+  .kpg-important-content ul,
+  .kpg-important-content ol {
+    margin: 0.9434vw 0;
+    padding-left: 1.8868vw; /* 32px */
+  }
+
+  .kpg-important-content li {
+    margin-bottom: 0.4717vw; /* 8px */
+  }
+}
+

@@ -1,0 +1,139 @@
+/**
+ * KPG Breadcrumbs Widget Styles
+ * 
+ * Based on prompts #51 and #52
+ * Design: lowercase, DM Mono font, simple styling
+ * 
+ * Mobile base: 375px
+ * Desktop base: 1696px
+ */
+
+@import '_kpg-colors.css';
+
+/* ============================================
+   MOBILE STYLES (base: 375px)
+   ============================================ */
+
+.kpg-breadcrumbs {
+  position: relative;
+  width: 100%;
+  margin-bottom: 4.2667vw; /* 16px / 375px */
+}
+
+.kpg-breadcrumbs-inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2.1333vw; /* 8px / 375px */
+  padding: 0 4.2667vw; /* 0 16px / 375px */
+}
+
+.kpg-breadcrumbs-item {
+  /* Body Text/Caption MD/Light ALLCAPS */
+  color: #899596; /* var(--Gray-60) */
+  leading-trim: both;
+  text-edge: cap;
+  font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 3.2vw; /* 12px / 375px */
+  font-style: normal;
+  font-weight: 300;
+  line-height: 120%; /* 14.4px */
+  letter-spacing: 0.16vw; /* 0.6px / 375px */
+  text-transform: uppercase; /* ZAWSZE uppercase */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.kpg-breadcrumbs-item a,
+a.kpg-breadcrumbs-item {
+  color: var(--kpg-dark); /* #404848 */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.kpg-breadcrumbs-item a:hover,
+a.kpg-breadcrumbs-item:hover {
+  color: var(--kpg-green); /* #0d8e67 */
+  text-decoration: none;
+}
+
+.kpg-breadcrumbs-item--current {
+  color: var(--kpg-text-tertiary); /* #6f7b7c - lighter for current */
+  cursor: default;
+}
+
+.kpg-breadcrumbs-separator {
+  font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 3.2vw; /* 12px / 375px */
+  font-weight: 300;
+  color: var(--kpg-text-inactive); /* #a3afb0 */
+  user-select: none;
+}
+
+/* ============================================
+   DESKTOP STYLES (min-width: 1025px, base: 1696px)
+   ============================================ */
+
+@media screen and (min-width: 1025px) {
+  .kpg-breadcrumbs {
+    margin-bottom: 0.9434vw; /* 16px / 1696px */
+  }
+
+  .kpg-breadcrumbs-inner {
+    gap: 0.4717vw; /* 8px / 1696px */
+    padding: 0 0.9434vw; /* 0 16px / 1696px */
+  }
+
+  .kpg-breadcrumbs-item {
+    font-size: 0.7076vw; /* 12px / 1696px */
+    line-height: 120%; /* 14.4px */
+    letter-spacing: 0.0354vw; /* 0.6px / 1696px */
+  }
+
+  .kpg-breadcrumbs-separator {
+    font-size: 0.7076vw; /* 12px / 1696px */
+  }
+}
+
+/* ============================================
+   OVERRIDE WORDPRESS/ELEMENTOR STYLES
+   ============================================ */
+
+/* Reset link styles within breadcrumbs */
+.kpg-breadcrumbs a,
+.kpg-breadcrumbs a:link,
+.kpg-breadcrumbs a:visited {
+  color: var(--kpg-dark) !important;
+  text-decoration: none !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.kpg-breadcrumbs a:hover,
+.kpg-breadcrumbs a:focus {
+  color: var(--kpg-green) !important; /* #0d8e67 */
+  text-decoration: none !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.kpg-breadcrumbs a:focus-visible {
+  outline: 2px solid var(--kpg-focus-outline);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ============================================
+   ELEMENTOR EDITOR COMPATIBILITY
+   ============================================ */
+
+.elementor-editor-active .kpg-breadcrumbs a {
+  pointer-events: none;
+}
+

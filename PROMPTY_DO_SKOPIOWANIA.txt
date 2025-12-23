@@ -1,0 +1,459 @@
+================================================================================
+PROMPTY DO SKOPIOWANIA - JEDEN PO DRUGIM
+================================================================================
+Wyekstrahowane z 122,173 linii dokumentacji
+Łącznie: 72 kluczowe prompty gotowe do użycia
+================================================================================
+
+---[ GIT & SETUP ]---
+
+add git ignore for wordpress
+
+---
+
+create new user please with php script
+
+---
+
+dalej mam 10000 zmian git ignore jest zly
+
+---
+
+---[ BLOG ARCHIVE - FEATURED POST ]---
+
+.kpg-blog-archive-container .kpg-featured-post
+height auto prosze a na gorze ma byc feature post
+ten taki zolty
+
+---
+
+bg of first featured #F9FF46
+
+---
+
+first featured post of blog should look like this
+[załącz kod React z Figmy]
+
+---
+
+---[ BLOG ARCHIVE - LAYOUT ]---
+
+kpg-post-list tu nie dodawaj marginsue 
+kpg-post-large
+tu tez i paddingu
+
+---
+
+caly layoutr nie miesci sie w 100vw wywala poza nie wiem czemu 
+np te sie nie mieszcza i ucina 
+kpg-featured-post-title
+kpg-post-list
+
+---
+
+popatrz posty soe potwarzaja to zle maja sie po kolei wysiwetlac
+
+---
+
+kpg-blog-sorting
+tu dodaj jakis margin bottom 32px np
+
+---
+
+ale mamy miec liste postow i w srodku np 3 ma byc duzym postem mozemy tak zerobic? zeby bylo troche sie dzialo
+
+---
+
+jak nie ma post obrazka to dodaj tam pusty kwadrat
+
+---
+
+to jest overflow ta sekcja z blogami zadbaj zeby to bylo 25% 75% z gap 20px prosze na desktopie
+
+---
+
+dalej overflowuje na prawo za duza sekcja z blogami
+
+---
+
+.e-loop-item .e-con:has(.elementor-widget-author-box):has(.elementor-widget-post-info)
+tu ustal max width w vw a nie px z importantem
+
+---
+
+@kpg-loop-post-footer-styles.php (73-74) tu zmien
+
+---
+
+zmien na vw
+
+---
+
+---[ PAGINACJA ]---
+
+background: #A3AFB0;
+width: 1240px;
+height: 0.5px;
+on desktop in blog we need to add this below all blogs list in grid + same pagination as on mobile with 01 02 03 - xx and arrow right
+
+---
+
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+<path d="M12 24L20 16L12 8.00001" stroke="#6F7B7C" stroke-width="1.33333" stroke-linecap="square"/>
+</svg>
+1x
+
+add these 2x instead of arrow right on pagination 
+width: 48px;
+height: 32px;
+border-radius: 8px;
+background: var(--Gray-20, #E3EBEC);
+
+---
+
+podwojna ma byc 2 oboj siebie te same svg
+
+---
+
+dobra uzztyj po prpstu tego svg zamiast 2 
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="32" viewBox="0 0 40 32" fill="none">
+<path d="M20 24L28 16L20 8" stroke="#252B2B" stroke-width="1.33333" stroke-linecap="square"/>
+<path d="M12 24L20 16L12 8" stroke="#252B2B" stroke-width="1.33333" stroke-linecap="square"/>
+</svg>
+
+---
+
+kpg-blog-pagination-arrow
+to powinno wygladac tak 
+width: 60px;
+height: 32px;
+border-radius: 8px;
+background: var(--Gray-20, #E3EBEC);
+
+---
+
+change color of these 
+active: 
+page-numberscolor: var(--Gray-90, #404848);
+font-family: "DM Mono";
+font-size: 16px;
+font-weight: 300;
+line-height: 160%;
+text-transform: uppercase;
+
+non active color: var(--Gray-50, #A3AFB0);
+[same typography]
+
+---
+
+kpg-pagination-arrow
+zmienmy na ikonke 1:1 jak na mobile 
+dodatkowo ta ikonka 
+kpg-blog-pagination-arrow
+ma miec jedno svg absolutne 6px obok tego pierwszego
+
+---
+
+na desktop tak samo kpg-pagination-arrow
+
+---
+
+testuje n blog i test blog dalej nie ma na desktopie paginacji
+
+---
+
+<nav class="elementor-pagination" aria-label="Paginacja">
+  [HTML z problemem]
+</nav>
+dodalem ale nie wyglada tak jak tamto
+
+---
+
+http://kontrola-dotacji-oswiatowych.local/blog-test/ 
+tu patrze i dalej takie same style maja
+
+---
+
+@blog-archive.php (543-547) is this correct way to do it? what if we are on 4 page will it work? is it dynamic
+
+---
+
+---[ TEAM SLIDER - LAYOUT ]---
+
+albo border bottom 8px pod tytulem
+
+---
+
+na desktopie 16px pod tym
+
+---
+
+dalej na mobile kpg-team-slider-navigation to ma byc nad tym kpg-team-slider-top-section
+
+---
+
+kpg-team-slider-container tu daj min-height auto na moible i padding bottom 32px
+
+---
+
+czemu nie ma na mobile przerwy miedzy slidami
+
+---
+
+---[ TEAM SLIDER - OBRAZY ]---
+
+w team sliderze 
+kpg-team-slider-main-image-wrapper
+na obrazy nie powinny dzialc te style object-position
+dadatkowo obrazki na mobile bardzo zle sa dopasowane do miejsca w ktoyrym sa porpaw je
+
+---
+
+.kpg-team-slider-main-image {
+    width: 89.5561vw;
+przez to proporcje sa tragiczne musimy to poprawic zeby bylo normalne tam zdj duze
+wg designu width: 343px;
+height: 457px;
+aspect-ratio: 343/457;
+
+---
+
+<img style="object-position: center calc(50% + 50px);">
+dalej te obrazki fatalnie na mobile sie wyswietlaja
+
+---
+
+teraz zdj jest ok ale nie widac calego height powinno by
+
+---
+
+swiper-slide swiper-slide-active
+min-height ma byc 427px na 370px
+
+---
+
+niee na max 370 na mobile po prostu tylko ci dalem zebys na vw przeliczyl
+
+---
+
+kpg-team-slider-main-image-wrapper
+to i kpg-team-slider-main-image
+i img inside should follow this height
+
+---
+
+---[ TEAM SLIDER - TEKSTY ]---
+
+.kpg-team-slider-text.kpg-team-slider-text-left ten tekst na mobile ma miec akie wymiary 
+overflow: hidden;
+color: #404848;
+leading-trim: both;
+text-edge: cap;
+text-overflow: ellipsis;
+font-family: Nohemi;
+font-size: 16px;
+font-style: normal;
+font-weight: 300;
+line-height: 24px;
+letter-spacing: 0.16px;
+
+---
+
+kpg-team-slider-text kpg-team-slider-text-right ten tekst tez ostyluj tak jak 
+te .kpg-team-slider-text-item na mobile
+
+---
+
+kpg-team-slider-text kpg-team-slider-text-right
+to tez ostyluj kurwa wszystkie teksty w sliderze mialaj oprocz tytulu i stanowiska taki sam font size etc
+
+---
+
+.kpg-team-slider-text.kpg-team-slider-text-right
+dalej jest malutkie na mobile
+
+---
+
+kpg-team-slider-text kpg-team-slider-text-right a to nie mialo sie pokazywac pozniej? bo teraz calyczas jest widoczny
+
+---
+
+nie jest ukryty
+
+---
+
+wczesniej dzialalo teraz nie dziala dalej widze za duzo
+
+---
+
+kpg-team-slider-text-section kpg-team-slider-text-section-mobile active to jest aktive nie wiem czemu active chyba ma byc dopeiro po tym jak klikne zobacz wiecej tak?
+
+---
+
+.kpg-team-slider-text-section-mobile
+to powinno byc widoczne jak i to class="kpg-team-slider-expand-mobile"
+
+---
+
+zawsze
+
+---
+
+---[ TEAM SLIDER - ANIMACJE ]---
+
+kpg-team-slider-text kpg-team-slider-text-left expanded
+tu max-height jest zle ustalany czasem i teksty nachodza na siebie
+
+---
+
+display: flex !important;
+max-height: 675px !important;
+overflow: visible !important;
+-webkit-line-clamp: unset !important;
+-webkit-box-orient: unset !important;
+dalej takie style inline sa tu 
+kpg-team-slider-text kpg-team-slider-text-left expanded
+
+---
+
+ta animacja pojawiania sie tekstu jest tragiczna po tym jak sie pojawia mozemy ja jakos pokazac aldniej
+
+---
+
+---[ WIDGET O NAS ]---
+
+stworz teraz nowy wideget o nas @onas_desktop/ 
+@onasmobile/ 
+tu masz mobile i desktop 
+@SCSS_CSS_BEST_PRACTICES.md (1-875) 
+edycja tekstu i zdjec ma byc
+
+---
+
+10 px po lewej od kpg-onas-author-info powinno byc
+@wp-content/uploads-webpc/uploads/avatar.svg
+width: 32px;
+height: 32px;
+
+---
+
+<div class="kpg-author-section-avatar"><img src="http://kontrola-dotacji-oswiatowych.local/wp-content/uploads/Ellipse-3.png" alt="test"></div>
+zmien ten obrazek na ten
+
+---
+
+o nas w ogole nie wyglada na desktop poprawnie ma wygladac tak
+[załącz pełny React component + CSS z designu]
+
+---
+
+---[ WIDGET ARTYKUŁY OD ]---
+
+widget zrob musimy do artykuly od dac 
+[załącz React component + CSS]
+dynamiczne z profilu wszystko 
+ale na razie dla demo daj te co sa tu
+mniej wiecje taki 
+display: flex;
+width: 385px;
+padding: 16px 16px 32px 16px;
+align-items: flex-start;
+gap: 32px;
+
+---
+
+---[ AVATARY I METADANE ]---
+
+@post-meta-bar.php (261) zamiast tego wyswietl imie i nazwisko w kazdym miesjcu tak ma byc
+
+---
+
+teraz jestpuste..
+
+---
+
+<div class="kpg-author-section-avatar">
+  <img src="https://secure.gravatar.com/avatar/...?s=96" alt="test">
+</div>
+
+---
+
+---[ BREADCRUMBS ]---
+
+http://kontrola-dotacji-oswiatowych.local/blog-test/ ten breadcrumbs zle dziala jestem tutaj powinienem byc na home / blog-test 
+
+a jest <nav class="kpg-breadcrumbs">
+  <span class="kpg-breadcrumbs-item--current">home</span>
+</nav>
+
+---
+
+http://kontrola-dotacji-oswiatowych.local/author/m.peczkowski/ 
+jestem tu. abreadcrumbs nasz mowi ze cos jest nie tak 
+[pokazuje tytuł posta zamiast imienia autora]
+
+---
+
+---[ STRONA WYSZUKIWANIA ]---
+
+STRONA SZUkania wyglada w ogole jak z innej bajki dopasuj podstawowo ja chociaz 
+<div class="page-content">
+  <article class="post">
+    <h2 class="entry-title"><a href="...">...</a></h2>
+    <p>...</p>
+  </article>
+</div>
+zeby przypominla te artykuly co na blogu
+
+---
+
+---[ BEST PRACTICES ]---
+
+nie ustalaj height prosze span a, h.. itd tekstowym elementom chyba ze to bardzo potrezebne do aniamcji np teraz te elementy sa za duzo w onas
+
+---
+
+tu ustal max width w vw a nie px z importantem
+
+---
+
+zmien na vw
+
+---
+
+---[ META ]---
+
+can you export for me all messages from this chat?
+
+---
+
+@cursor_padding_po_rozwini_ciu.md (1-15430) 
+@cursor_project_documentation_review.md (1-106743) 
+
+zapoznaj sie prosze z tymi plikami, przestuduj je porzadnie i musimy wyluskac wszydstkie moje prompty, wziac te najwazniejsze i dac mi je jeden po drugim do pliku
+
+================================================================================
+KONIEC - 72 KLUCZOWE PROMPTY
+================================================================================
+
+INSTRUKCJA UŻYCIA:
+1. Skopiuj prompt który Cię interesuje
+2. Dostosuj selektory CSS/nazwy plików do swojej sytuacji
+3. Jeśli prompt zawiera "[załącz...]" - dodaj swój kod/design
+4. Użyj dokładnie takiej składni jak w promptach (zwiększa skuteczność)
+
+WZORZEC:
+- Konkretny selektor (.klasa lub @plik.php)
+- Opis problemu ("dalej overflowuje", "źle się wyświetla")
+- Oczekiwany stan ("wg designu width: X", "ma wyglądać tak")
+- Kontekst ("na mobile", "tylko dla aktywnego stanu")
+
+NAJSKUTECZNIEJSZE:
+✓ Pokazywanie HTML z problemem
+✓ Podawanie konkretnych wymiarów z designu
+✓ Wskazywanie pliku i linii (@file.php (73-74))
+✓ Pokazywanie przykładu prawidłowego ("tak jak tu")
+✓ Używanie "wg designu" + wartości
+
+================================================================================
+

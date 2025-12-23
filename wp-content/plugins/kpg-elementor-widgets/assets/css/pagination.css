@@ -1,0 +1,189 @@
+/**
+ * KPG Pagination Widget Styles
+ * 
+ * Based on prompts #18-27 (12 prompts total!)
+ * Prompt #25: SVG with two paths (40x32px)
+ * Prompt #22: Active #404848, Inactive #a3afb0, 16px, 160% line-height, uppercase
+ * Prompt #26: Arrow container 60x32px, border-radius 8px, bg #E3EBEC
+ * Prompt #18: Desktop separator 1240px x 0.5px, bg #A3AFB0
+ * 
+ * Mobile base: 375px
+ * Desktop base: 1696px
+ */
+
+@import '_kpg-colors.css';
+
+/* ============================================
+   MOBILE STYLES (base: 375px)
+   ============================================ */
+
+/* Separator line - hidden on mobile */
+.kpg-blog-separator {
+  display: none;
+}
+
+/* Pagination */
+.kpg-blog-pagination {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 11.2vw; /* 42px / 375px */
+  position: relative;
+  width: 67.4667vw; /* 253px / 375px */
+  margin: 17.0667vw 0 0 28.2667vw; /* 64px 0 0 106px / 375px - z Figmy */
+}
+
+.kpg-blog-pagination-numbers {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  gap: 4.2667vw; /* 16px / 375px */
+  position: relative;
+}
+
+.kpg-blog-pagination-item {
+  flex-shrink: 0;
+  flex-basis: auto;
+  position: relative;
+  height: auto;
+  color: var(--kpg-text-inactive); /* #a3afb0 - inactive */
+  font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 4.2667vw; /* 16px / 375px */
+  font-weight: 300;
+  line-height: 160%; /* 25.6px */
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.kpg-blog-pagination-item:hover,
+.kpg-blog-pagination-item.active {
+  color: var(--kpg-dark); /* #404848 - active */
+}
+
+.kpg-blog-pagination-separator {
+  flex-shrink: 0;
+  position: relative;
+  width: 10.4vw; /* 39px / 375px */
+  height: 0.2667vw; /* 1px / 375px */
+  background: var(--kpg-border-subtle); /* #e3ebec */
+}
+
+/* Arrow container - Prompt #26 */
+.kpg-blog-pagination-arrow {
+  flex-shrink: 0;
+  position: relative;
+  width: 16vw; /* 60px / 375px */
+  height: 8.5333vw; /* 32px / 375px */
+  border-radius: 2.1333vw; /* 8px / 375px */
+  background: var(--kpg-bg-gray); /* #E3EBEC */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.kpg-blog-pagination-arrow:hover {
+  opacity: 0.7;
+}
+
+/* SVG inside arrow - Prompt #25 */
+.kpg-blog-pagination-arrow svg {
+  width: 10.6667vw; /* 40px / 375px */
+  height: 8.5333vw; /* 32px / 375px */
+}
+
+/* ============================================
+   DESKTOP STYLES (min-width: 1025px, base: 1696px)
+   ============================================ */
+
+@media screen and (min-width: 1025px) {
+  /* Separator line above pagination - Prompt #18 */
+  .kpg-blog-separator {
+    display: block;
+    width: 73.1132vw; /* 1240px / 1696px */
+    height: 0.0295vw; /* 0.5px / 1696px */
+    background: #A3AFB0;
+    margin: 0 auto;
+    margin-bottom: 3.7736vw; /* 64px / 1696px */
+  }
+
+  .kpg-blog-pagination {
+    gap: 2.4764vw; /* 42px / 1696px */
+    width: auto;
+    margin: 0 auto;
+    justify-content: center;
+  }
+
+  .kpg-blog-pagination-numbers {
+    gap: 0.9434vw; /* 16px / 1696px */
+  }
+
+  /* Prompt #22: Active/Inactive colors + typography */
+  .kpg-blog-pagination-item {
+    font-size: 0.9434vw; /* 16px / 1696px */
+    line-height: 160%; /* 25.6px */
+    text-transform: uppercase;
+    color: var(--kpg-text-inactive); /* #a3afb0 - inactive */
+  }
+
+  .kpg-blog-pagination-item:hover,
+  .kpg-blog-pagination-item.active {
+    color: var(--kpg-dark); /* #404848 - active */
+  }
+
+  .kpg-blog-pagination-separator {
+    width: 2.3001vw; /* 39px / 1696px */
+    height: 0.0590vw; /* 1px / 1696px */
+  }
+
+  /* Arrow container - Prompt #26 desktop */
+  .kpg-blog-pagination-arrow {
+    width: 3.5377vw; /* 60px / 1696px */
+    height: 1.8868vw; /* 32px / 1696px */
+    border-radius: 0.4717vw; /* 8px / 1696px */
+  }
+
+  .kpg-blog-pagination-arrow svg {
+    width: 2.3585vw; /* 40px / 1696px */
+    height: 1.8868vw; /* 32px / 1696px */
+  }
+}
+
+/* ============================================
+   OVERRIDE WORDPRESS/ELEMENTOR STYLES
+   ============================================ */
+
+.kpg-blog-pagination * {
+  box-sizing: border-box;
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.kpg-blog-pagination-item:focus-visible {
+  outline: 2px solid var(--kpg-focus-outline);
+  outline-offset: 2px;
+}
+
+.kpg-blog-pagination-arrow:focus-visible {
+  outline: 2px solid var(--kpg-focus-outline);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   DISABLED STATE
+   ============================================ */
+
+.kpg-blog-pagination-arrow.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+

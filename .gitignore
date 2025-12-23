@@ -1,0 +1,101 @@
+# WordPress
+# =========
+
+# WordPress core files
+wp-admin/
+wp-includes/
+wp-*.php
+xmlrpc.php
+license.txt
+readme.html
+
+# WordPress config file (contains sensitive data)
+wp-config.php
+
+# WordPress content - uploads and cache
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/backups/
+wp-content/languages/
+wp-content/wp-rocket-config/
+wp-content/ai1wm-backups/
+wp-content/debug.log
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+
+# Plugins (ignore all EXCEPT kpg-elementor-widgets)
+wp-content/plugins/*
+!wp-content/plugins/kpg-elementor-widgets/
+!wp-content/plugins/kpg-elementor-widgets/**
+
+# Themes (ignore all themes - uncomment if you want to track custom themes)
+wp-content/themes/
+
+# Languages (optional - uncomment if you want to ignore)
+# wp-content/languages/
+
+# WordPress specific files
+.htaccess
+sitemap.xml
+sitemap.xml.gz
+
+# Database
+*.sql
+*.sql.gz
+
+# Logs
+*.log
+error_log
+debug.log
+
+# OS Files
+# =========
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# IDE Files
+# =========
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.settings/
+
+# Node modules (if using build tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Composer / Vendor directories
+vendor/
+composer.lock
+**/vendor/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Utility scripts (should be deleted after use)
+create-user.php
