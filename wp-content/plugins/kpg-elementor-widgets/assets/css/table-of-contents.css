@@ -13,17 +13,20 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 1.4151vw; /* 24px / 1696px */
-  width: 23.1132vw; /* 392px / 1696px */
+  width: 100%; /* 392px / 1696px */
   margin: 0;
   padding: 1.8868vw 1.8868vw 3.7736vw; /* 32px 32px 64px / 1696px */
   background: #edf2f3; /* dokładnie z Figmy */
   border-radius: 0.4717vw; /* 8px */
   box-sizing: border-box;
+  position: relative;
+  z-index: 100;
 }
 
 .kpg-toc-container.kpg-toc-sticky {
   position: sticky;
   top: 2.3585vw; /* 40px default */
+  z-index: 100;
 }
 
 /* Header z tytułem */

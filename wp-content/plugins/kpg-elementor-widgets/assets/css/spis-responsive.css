@@ -1,0 +1,29 @@
+/**
+ * Spis Treści - Responsive Display
+ * 
+ * Desktop: wyłączony poniżej 768px
+ * Mobile: wyłączony powyżej 768px
+ */
+
+/* Mobile - domyślnie widoczny poniżej 768px */
+.spis_mobile {
+  display: block;
+}
+
+/* Desktop - domyślnie ukryty poniżej 768px */
+.spis_desktop {
+  display: none;
+}
+
+/* Desktop - powyżej 768px */
+@media screen and (min-width: 768px) {
+  .spis_mobile {
+    display: none !important;
+  }
+
+  .spis_desktop {
+    display: block !important;
+  }
+}
+
+

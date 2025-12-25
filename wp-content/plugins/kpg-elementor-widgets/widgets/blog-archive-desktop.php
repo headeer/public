@@ -68,6 +68,16 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 			]
 		);
 
+		$this->add_control(
+			'filter_by_author',
+			[
+				'label' => esc_html__( 'Filter by Author Automatically', 'kpg-elementor-widgets' ),
+				'type' => Controls_Manager::SWITCHER,
+				'default' => 'yes',
+				'description' => esc_html__( 'Automatically filter posts by author when on author archive pages (/author/name/)', 'kpg-elementor-widgets' ),
+			]
+		);
+
 		$this->end_controls_section();
 	}
 
@@ -87,6 +97,62 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 			'post_status' => 'publish',
 			'ignore_sticky_posts' => true,
 		];
+
+		// Filter by author if on author archive page and setting is enabled
+		if ( $settings['filter_by_author'] === 'yes' ) {
+			$author_id = null;
+			
+			// Try multiple methods to detect author
+			if ( is_author() ) {
+				$queried_object = get_queried_object();
+				if ( $queried_object && isset( $queried_object->ID ) ) {
+					$author_id = $queried_object->ID;
+				} else {
+					$author_id = get_queried_object_id();
+				}
+			}
+			
+			// Fallback: check query vars
+			if ( ! $author_id ) {
+				$author_var = get_query_var( 'author' );
+				if ( $author_var ) {
+					$author_id = intval( $author_var );
+				}
+			}
+			
+			// Fallback: check author_name query var
+			if ( ! $author_id ) {
+				$author_name = get_query_var( 'author_name' );
+				if ( $author_name ) {
+					$author = get_user_by( 'slug', $author_name );
+					if ( $author ) {
+						$author_id = $author->ID;
+					}
+				}
+			}
+			
+			// Fallback: check URL directly
+			if ( ! $author_id ) {
+				$request_uri = $_SERVER['REQUEST_URI'] ?? '';
+				if ( preg_match( '#/author/([^/]+)/?#', $request_uri, $matches ) ) {
+					$author_slug = $matches[1];
+					$author = get_user_by( 'slug', $author_slug );
+					if ( $author ) {
+						$author_id = $author->ID;
+					} else {
+						// Try as numeric ID
+						$author_id = intval( $author_slug );
+						if ( $author_id && ! get_user_by( 'ID', $author_id ) ) {
+							$author_id = null;
+						}
+					}
+				}
+			}
+			
+			if ( $author_id ) {
+				$args['author'] = $author_id;
+			}
+		}
 
 		$query = new WP_Query( $args );
 		?>

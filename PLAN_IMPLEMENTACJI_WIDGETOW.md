@@ -1675,3 +1675,4 @@ Zaczynam implementację od najmniejszego, standalone widgetu z pełną specyfika
 _Dokument przygotowujący do implementacji 12 widgetów Elementor dla projektu KPG_
 _Następny krok: Implementacja Widget #1 - Blog Sorting_
 
+

@@ -315,3 +315,4 @@ class KPG_Elementor_Breadcrumbs_Widget extends Widget_Base {
 	}
 }
 
+

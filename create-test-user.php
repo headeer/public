@@ -69,3 +69,4 @@ echo "URL: " . wp_login_url() . "\n";
 echo "Username: {$username}\n";
 echo "Password: {$password}\n";
 
+

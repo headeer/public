@@ -69,3 +69,41 @@
  * transition: background-color var(--kpg-transition-normal);
  */
 
+/* ============================================
+   GLOBAL RESET FOR ALL KPG WIDGETS
+   ============================================ */
+
+/* Reset WordPress default input styles in all KPG widgets */
+[class*="kpg-"] input[type="text"],
+[class*="kpg-"] input[type="email"],
+[class*="kpg-"] input[type="url"],
+[class*="kpg-"] input[type="password"],
+[class*="kpg-"] input[type="search"],
+[class*="kpg-"] input[type="number"],
+[class*="kpg-"] input[type="tel"],
+[class*="kpg-"] input[type="date"],
+[class*="kpg-"] textarea,
+[class*="kpg-"] select {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+  /* Każdy widget ustawi swój border jeśli potrzebny */
+}
+
+/* Reset WordPress button styles in all KPG widgets */
+[class*="kpg-"] button,
+[class*="kpg-"] button[type="button"],
+[class*="kpg-"] button[type="submit"],
+[class*="kpg-"] input[type="button"],
+[class*="kpg-"] input[type="submit"] {
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  text-decoration: none !important;
+  /* Każdy widget ustawi swoje style */
+}
+

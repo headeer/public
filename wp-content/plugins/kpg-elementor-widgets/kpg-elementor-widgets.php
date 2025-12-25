@@ -70,11 +70,194 @@ final class KPG_Elementor_Widgets {
 		add_action( 'elementor/frontend/after_register_styles', [ $this, 'register_styles' ] );
 		add_action( 'elementor/frontend/after_register_scripts', [ $this, 'register_scripts' ] );
 
+		// Enqueue global styles (spis responsive)
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_global_styles' ] );
+
 		// Register widgets
 		add_action( 'elementor/widgets/register', [ $this, 'register_widgets' ] );
 
 		// Register widget categories
 		add_action( 'elementor/elements/categories_registered', [ $this, 'register_widget_categories' ] );
+		
+		// Wyłącz domyślne komentarze WordPress jeśli widget jest użyty
+		add_filter( 'comments_template', [ $this, 'disable_default_comments_template' ], 99 );
+		add_action( 'wp_head', [ $this, 'hide_default_comments_css' ] );
+		add_action( 'comments_template', [ $this, 'force_hide_comments_template' ], 999 );
+	}
+	
+	/**
+	 * Wyłącz domyślny template komentarzy jeśli widget KPG jest użyty
+	 */
+	public function disable_default_comments_template( $template ) {
+		// Sprawdź czy na stronie jest widget KPG Comments
+		$post_id = get_the_ID();
+		if ( ! $post_id ) {
+			return $template;
+		}
+		
+		// Sprawdź czy Elementor jest dostępny
+		if ( ! class_exists( '\Elementor\Plugin' ) ) {
+			return $template;
+		}
+		
+		// Sprawdź czy strona jest zbudowana z Elementorem
+		$document = \Elementor\Plugin::$instance->documents->get( $post_id );
+		if ( ! $document ) {
+			return $template;
+		}
+		
+		// Sprawdź czy widget jest użyty na stronie
+		$elements = $document->get_elements_data();
+		if ( $elements && $this->has_kpg_comments_widget( $elements ) ) {
+			// Zwróć pusty template
+			$empty_template = __DIR__ . '/includes/empty-comments-template.php';
+			if ( file_exists( $empty_template ) ) {
+				return $empty_template;
+			}
+		}
+		
+		return $template;
+	}
+	
+	/**
+	 * Sprawdź czy w elementach jest widget KPG Comments
+	 */
+	private function has_kpg_comments_widget( $elements ) {
+		if ( ! is_array( $elements ) ) {
+			return false;
+		}
+		
+		foreach ( $elements as $element ) {
+			if ( isset( $element['widgetType'] ) && $element['widgetType'] === 'kpg-comments' ) {
+				return true;
+			}
+			if ( isset( $element['elements'] ) && $this->has_kpg_comments_widget( $element['elements'] ) ) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Force hide comments template - ostateczny fallback
+	 */
+	public function force_hide_comments_template( $template ) {
+		// Jeśli to Elementor i jest widget komentarzy - użyj pustego template
+		$post_id = get_the_ID();
+		if ( ! $post_id ) {
+			return $template;
+		}
+		
+		if ( ! class_exists( '\Elementor\Plugin' ) ) {
+			return $template;
+		}
+		
+		// Sprawdź czy dokument Elementora istnieje
+		$document = \Elementor\Plugin::$instance->documents->get( $post_id );
+		if ( $document ) {
+			$elements = $document->get_elements_data();
+			if ( $elements && $this->has_kpg_comments_widget( $elements ) ) {
+				$empty_template = __DIR__ . '/includes/empty-comments-template.php';
+				if ( file_exists( $empty_template ) ) {
+					return $empty_template;
+				}
+			}
+		}
+		
+		return $template;
+	}
+
+	/**
+	 * CSS do ukrycia domyślnych komentarzy WordPress poza widgetem
+	 */
+	public function hide_default_comments_css() {
+		?>
+		<style>
+			/* Ukryj WSZYSTKIE komentarze poza widgetem KPG */
+			.comments-area,
+			#comments,
+			.comment-list,
+			.comment-respond,
+			.comment-form,
+			.comments-title,
+			.comment,
+			.comment-body,
+			.comment-author,
+			.comment-date,
+			.comment-text,
+			/* Ukryj tylko linki odpowiedzi poza kontenerem KPG */
+			.comment-reply-link:not(.kpg-comment-reply-link) {
+				display: none !important;
+			}
+			
+			/* Pokaż linki odpowiedzi w kontenerze KPG */
+			.kpg-comments-container .kpg-comment-reply-link,
+			.kpg-comments-container .kpg-comment-reply-link a,
+			.kpg-comments-container .comment-reply-link {
+				display: inline-block !important;
+				visibility: visible !important;
+				opacity: 1 !important;
+				height: auto !important;
+				overflow: visible !important;
+			}
+
+
+			/* Pokaż komentarze w widgetcie KPG */
+			.kpg-comments-container .kpg-comment-main,
+			.kpg-comments-container .kpg-comment,
+			.kpg-comments-container .comment-respond,
+			.kpg-comments-container .comment-form,
+			.kpg-comments-container #respond,
+			.kpg-comments-container #commentform,
+			.kpg-comments-container form#commentform,
+			.kpg-comments-container .kpg-comment-reply-link,
+			.kpg-comments-container .kpg-comment-reply-link a,
+			.kpg-comments-container .comment-reply-link,
+			.kpg-comments-container .comment-reply-link a,
+			.kpg-comments-container .children .kpg-comment-reply-link,
+			.kpg-comments-container .children .kpg-comment-reply-link a,
+			.kpg-comments-container .children .comment-reply-link,
+			.kpg-comments-container .children .comment-reply-link a {
+				display: block !important;
+				visibility: visible !important;
+				opacity: 1 !important;
+			}
+
+			.kpg-comments-container .kpg-comment-main {
+				display: flex !important;
+			}
+
+			.kpg-comments-container .kpg-comment-reply-link,
+			.kpg-comments-container .children .kpg-comment-reply-link {
+				display: inline-block !important;
+			}
+
+
+			/* Pokaż TYLKO komentarze w widgecie KPG - bardzo specyficzne selektory */
+			.kpg-comments-container .kpg-comment-main,
+			.kpg-comments-container .kpg-comment,
+			.kpg-comments-container .comment.kpg-comment-main,
+			.kpg-comments-container .comment.kpg-comment,
+			.kpg-comments-container .kpg-comments-list .comment,
+			.kpg-comments-container .comment-respond,
+			.kpg-comments-container .comment-form,
+			.kpg-comments-container #respond,
+			.kpg-comments-container #commentform,
+			.kpg-comments-container .kpg-comment-form-container,
+			.kpg-comments-container .kpg-comment-form {
+				display: block !important;
+				visibility: visible !important;
+				opacity: 1 !important;
+				height: auto !important;
+				overflow: visible !important;
+			}
+
+			.kpg-comments-container .kpg-comment-main {
+				display: flex !important;
+			}
+		</style>
+		<?php
 	}
 
 	/**
@@ -250,6 +433,14 @@ final class KPG_Elementor_Widgets {
 			[],
 			self::VERSION
 		);
+
+		// Spis Responsive (spis_mobile / spis_desktop)
+		wp_register_style(
+			'kpg-spis-responsive-style',
+			plugins_url( 'assets/css/spis-responsive.css', __FILE__ ),
+			[],
+			self::VERSION
+		);
 	}
 
 	/**
@@ -318,6 +509,22 @@ final class KPG_Elementor_Widgets {
 			self::VERSION,
 			true
 		);
+
+		// Blog Content
+		wp_register_script(
+			'kpg-blog-content-script',
+			plugins_url( 'assets/js/blog-content.js', __FILE__ ),
+			[ 'jquery' ],
+			self::VERSION,
+			true
+		);
+	}
+
+	/**
+	 * Enqueue global styles
+	 */
+	public function enqueue_global_styles() {
+		wp_enqueue_style( 'kpg-spis-responsive-style' );
 	}
 
 	/**
@@ -376,7 +583,7 @@ final class KPG_Elementor_Widgets {
 		// NOTE: Widget 6 (Team Slider) and Widget 8 (Comments) are optional
 		// Can be added later if needed
 
-		// Widget 8: Comments ⏳ TODO
+		// Widget 8: Comments ✅ READY
 		if ( file_exists( __DIR__ . '/widgets/comments.php' ) ) {
 			require_once( __DIR__ . '/widgets/comments.php' );
 			$widgets_manager->register( new \KPG_Elementor_Comments_Widget() );
@@ -392,6 +599,12 @@ final class KPG_Elementor_Widgets {
 		if ( file_exists( __DIR__ . '/widgets/important-section.php' ) ) {
 			require_once( __DIR__ . '/widgets/important-section.php' );
 			$widgets_manager->register( new \KPG_Elementor_Important_Widget() );
+		}
+
+		// Blog Content Widget
+		if ( file_exists( __DIR__ . '/widgets/blog-content.php' ) ) {
+			require_once( __DIR__ . '/widgets/blog-content.php' );
+			$widgets_manager->register( new \KPG_Elementor_Blog_Content_Widget() );
 		}
 
 		// Widget 10: Articles From (O Autorze) ✅ READY

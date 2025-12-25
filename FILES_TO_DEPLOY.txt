@@ -1,0 +1,37 @@
+# Pliki do wdrożenia na produkcję
+# Wszystkie 34 zmienione pliki z gita
+
+wp-content/plugins/kpg-elementor-widgets/assets/css/_kpg-colors.css
+wp-content/plugins/kpg-elementor-widgets/assets/css/articles-from.css
+wp-content/plugins/kpg-elementor-widgets/assets/css/blog-content.css
+wp-content/plugins/kpg-elementor-widgets/assets/css/comments.css
+wp-content/plugins/kpg-elementor-widgets/assets/css/important-section.css
+wp-content/plugins/kpg-elementor-widgets/assets/css/onas.css
+wp-content/plugins/kpg-elementor-widgets/assets/css/pagination.css
+wp-content/plugins/kpg-elementor-widgets/assets/css/post-meta-bar.css
+wp-content/plugins/kpg-elementor-widgets/assets/css/spis-responsive.css
+wp-content/plugins/kpg-elementor-widgets/assets/css/table-of-contents.css
+wp-content/plugins/kpg-elementor-widgets/assets/css/team-slider.css
+wp-content/plugins/kpg-elementor-widgets/assets/js/blog-content.js
+wp-content/plugins/kpg-elementor-widgets/assets/js/comments.js
+wp-content/plugins/kpg-elementor-widgets/assets/js/pagination.js
+wp-content/plugins/kpg-elementor-widgets/assets/js/post-meta-bar.js
+wp-content/plugins/kpg-elementor-widgets/assets/js/table-of-contents.js
+wp-content/plugins/kpg-elementor-widgets/assets/js/team-slider-add-5-slides.js
+wp-content/plugins/kpg-elementor-widgets/assets/js/team-slider-create-slides.js
+wp-content/plugins/kpg-elementor-widgets/assets/js/team-slider.js
+wp-content/plugins/kpg-elementor-widgets/includes/elementor-loop-integration.php
+wp-content/plugins/kpg-elementor-widgets/includes/empty-comments-template.php
+wp-content/plugins/kpg-elementor-widgets/kpg-elementor-widgets.php
+wp-content/plugins/kpg-elementor-widgets/widgets/articles-from.php
+wp-content/plugins/kpg-elementor-widgets/widgets/blog-archive-desktop.php
+wp-content/plugins/kpg-elementor-widgets/widgets/blog-archive-mobile.php
+wp-content/plugins/kpg-elementor-widgets/widgets/blog-content.php
+wp-content/plugins/kpg-elementor-widgets/widgets/blog-sorting.php
+wp-content/plugins/kpg-elementor-widgets/widgets/breadcrumbs.php
+wp-content/plugins/kpg-elementor-widgets/widgets/comments.php
+wp-content/plugins/kpg-elementor-widgets/widgets/important-section.php
+wp-content/plugins/kpg-elementor-widgets/widgets/onas.php
+wp-content/plugins/kpg-elementor-widgets/widgets/pagination.php
+wp-content/plugins/kpg-elementor-widgets/widgets/table-of-contents.php
+wp-content/plugins/kpg-elementor-widgets/widgets/team-slider.php

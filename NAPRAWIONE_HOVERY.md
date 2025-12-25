@@ -370,3 +370,4 @@ wp-content/plugins/kpg-elementor-widgets/
 _Hovery naprawione zgodnie z paletą kolorów KPG_
 _Gotowe do testowania!_
 
+

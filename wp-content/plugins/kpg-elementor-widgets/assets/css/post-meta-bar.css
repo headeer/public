@@ -18,7 +18,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 91.4667vw; /* 343px / 375px */
+  width: 100%; /* 343px / 375px */
   margin: 0 auto;
   padding: 4.2667vw 0; /* 16px 0 */
   border-bottom: 0.2667vw solid #e3ebec; /* 1px */
@@ -82,8 +82,8 @@
 }
 
 .kpg-post-meta-share-icon {
-  width: 4.2667vw; /* 16px / 375px */
-  height: 4.2667vw;
+  width: 5.2667vw; /* 16px / 375px */
+  height: 3.667vw;
 }
 
 .kpg-post-meta-share-icon svg {

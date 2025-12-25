@@ -37,7 +37,7 @@
 		initShareButtons();
 	});
 
-	if (typeof elementorFrontend !== 'undefined') {
+	if (typeof elementorFrontend !== 'undefined' && elementorFrontend.hooks) {
 		elementorFrontend.hooks.addAction('frontend/element_ready/kpg-post-meta-bar.default', function() {
 			initShareButtons();
 		});

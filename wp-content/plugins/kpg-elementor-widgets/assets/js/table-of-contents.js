@@ -24,8 +24,12 @@
 				var targetId = $(this).data('target');
 				var $target = $('#' + targetId);
 				
+				console.log('KPG TOC: Click on', targetId, 'Found:', $target.length);
+				
 				if ($target.length) {
 					var offsetTop = $target.offset().top - stickyOffset - 20;
+					
+					console.log('KPG TOC: Scrolling to', offsetTop);
 					
 					$('html, body').animate({
 						scrollTop: offsetTop
@@ -34,6 +38,9 @@
 					// Update active immediately
 					$links.removeClass('active');
 					$(this).addClass('active');
+				} else {
+					console.warn('KPG TOC: Target not found:', targetId);
+					console.log('KPG TOC: Available IDs:', $('h2[id], h3[id], h4[id]').map(function() { return this.id; }).get());
 				}
 			});
 
@@ -75,7 +82,7 @@
 		initTOC();
 	});
 
-	if (typeof elementorFrontend !== 'undefined') {
+	if (typeof elementorFrontend !== 'undefined' && elementorFrontend.hooks) {
 		elementorFrontend.hooks.addAction('frontend/element_ready/kpg-table-of-contents.default', function() {
 			initTOC();
 		});
