@@ -137,6 +137,11 @@ class KPG_Elementor_Breadcrumbs_Widget extends Widget_Base {
 			'type'  => 'home',
 		];
 
+		// Safety: Don't proceed if we're in admin or during AJAX
+		if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+			return $items;
+		}
+
 		// Single post
 		if ( is_single() ) {
 			$items[] = [
@@ -147,42 +152,49 @@ class KPG_Elementor_Breadcrumbs_Widget extends Widget_Base {
 		}
 		// Category archive
 		elseif ( is_category() ) {
-			$cat = get_queried_object();
-			if ( $cat && isset( $cat->name ) ) {
-				$items[] = [
-					'label' => $cat->name,
-					'url'   => '',
-					'type'  => 'current',
-				];
+			// Use get_queried_object_id() first to avoid null issues with Rank Math SEO
+			$cat_id = get_queried_object_id();
+			if ( $cat_id ) {
+				$cat = get_category( $cat_id );
+				if ( $cat && ! is_wp_error( $cat ) && isset( $cat->name ) ) {
+					$items[] = [
+						'label' => $cat->name,
+						'url'   => '',
+						'type'  => 'current',
+					];
+				}
 			}
 		}
 		// Author archive - IMPORTANT: Use first_name + last_name (Prompt #52)
 		elseif ( is_author() ) {
-			$author = get_queried_object();
-			if ( $author && isset( $author->ID ) ) {
-				// Get first name and last name (NOT display_name)
-				$first_name = get_the_author_meta( 'first_name', $author->ID );
-				$last_name = get_the_author_meta( 'last_name', $author->ID );
-				
-				// Combine first and last name
-				$full_name = trim( $first_name . ' ' . $last_name );
-				
-				// Fallback to display_name if both are empty
-				if ( empty( $full_name ) ) {
-					$full_name = $author->display_name;
+			// Use get_queried_object_id() first to avoid null issues with Rank Math SEO
+			$author_id = get_queried_object_id();
+			if ( $author_id ) {
+				$author = get_userdata( $author_id );
+				if ( $author && isset( $author->ID ) ) {
+					// Get first name and last name (NOT display_name)
+					$first_name = get_the_author_meta( 'first_name', $author->ID );
+					$last_name = get_the_author_meta( 'last_name', $author->ID );
+					
+					// Combine first and last name
+					$full_name = trim( $first_name . ' ' . $last_name );
+					
+					// Fallback to display_name if both are empty
+					if ( empty( $full_name ) ) {
+						$full_name = $author->display_name;
+					}
+					
+					$items[] = [
+						'label' => $full_name,
+						'url'   => '',
+						'type'  => 'current',
+					];
 				}
-				
-				$items[] = [
-					'label' => $full_name,
-					'url'   => '',
-					'type'  => 'current',
-				];
 			}
 		}
 		// Blog archive or posts page - IMPORTANT: Get page title (Prompt #51)
 		elseif ( is_home() || is_archive() ) {
 			$archive_label = '';
-			$queried_object = get_queried_object();
 			
 			// Check if it's a page set as posts page
 			if ( is_home() && ! is_front_page() ) {
@@ -192,14 +204,17 @@ class KPG_Elementor_Breadcrumbs_Widget extends Widget_Base {
 				}
 			}
 			
-			// If it's a page object, get its title
-			if ( empty( $archive_label ) && is_a( $queried_object, 'WP_Post' ) ) {
-				$archive_label = get_the_title( $queried_object->ID );
-			}
-			
 			// If no label yet, try post type archive title
 			if ( empty( $archive_label ) ) {
 				$archive_label = post_type_archive_title( '', false );
+			}
+			
+			// If still no label, try to get current page title using queried_object_id (safer than get_queried_object)
+			if ( empty( $archive_label ) ) {
+				$queried_object_id = get_queried_object_id();
+				if ( $queried_object_id ) {
+					$archive_label = get_the_title( $queried_object_id );
+				}
 			}
 			
 			// If still no label, try to get current page title

@@ -1,0 +1,52 @@
+# PROMPT DO GENEROWANIA ARTYKUŁÓW BLOGOWYCH
+
+## Instrukcja:
+Wypełnij poniższy szablon i użyj go do generowania artykułu blogowego.
+
+---
+
+## SZABLON:
+
+Temat artykułu: [Opisz tutaj temat artykułu]
+
+Treść główna (3-6 sekcji z nagłówkami h2/h3):
+[Wklej tutaj treść artykułu z HTML - nagłówki h2/h3 i akapity p]
+
+Sekcja "Ważne" (opcjonalna):
+[Tutaj tekst sekcji ważne - tylko tekst, bez HTML]
+
+Pozycja sekcji "Ważne": [after_1 / after_2 / after_3 / after_4 / after_5 / after_6 / end]
+
+---
+
+## PRZYKŁAD:
+
+Temat artykułu: Zgłoszenia sygnalistów w oświacie - procedura i ochrona
+
+Treść główna:
+<h2>Kto może być sygnalistą?</h2>
+<p>Sygnalistą może być każda osoba, która posiada informacje o nieprawidłowościach w zakresie dotacji oświatowych...</p>
+
+<h2>Procedura zgłoszenia</h2>
+<p>Zgłoszenie powinno być złożone na piśmie lub elektronicznie...</p>
+
+<h2>Ochrona sygnalisty</h2>
+<p>Ustawa gwarantuje ochronę sygnalisty przed represjami...</p>
+
+Sekcja "Ważne":
+Zgłoszenia mogą być anonimowe lub podpisane – w obu przypadkach ustawa wymaga zachowania poufności (art. 8 ustawy). Tożsamość sygnalisty nie może być ujawniona bez jego wyraźnej zgody.
+
+Pozycja sekcji "Ważne": after_3
+
+---
+
+## WYTYCZNE:
+
+✓ Artykuł powinien mieć 3-6 sekcji z nagłówkami <h2> lub <h3>
+✓ Każda sekcja powinna mieć 2-4 akapity treści
+✓ Sekcja "Ważne" powinna być krótka (50-150 słów)
+✓ Używaj HTML: <h2>, <h3>, <p>, <strong>, <ul>, <li>
+✓ Długość całego artykułu: 800-1500 słów
+
+
+

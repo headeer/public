@@ -1,0 +1,66 @@
+/**
+ * KPG Blog Semantic HTML Styles
+ * 
+ * Styles for <article> and <aside> tags to ensure they don't break existing layouts
+ */
+
+/* Article - main blog content wrapper */
+.kpg-blog-article,
+article.kpg-blog-article {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Don't reset any child styles */
+}
+
+.kpg-blog-article > *,
+article.kpg-blog-article > * {
+  /* Preserve all existing styles of children */
+  box-sizing: border-box;
+}
+
+/* Aside - sidebar content wrapper */
+.kpg-blog-sidebar,
+aside.kpg-blog-sidebar {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Don't reset any child styles */
+}
+
+.kpg-blog-sidebar > *,
+aside.kpg-blog-sidebar > * {
+  /* Preserve all existing styles of children */
+  box-sizing: border-box;
+}
+
+/* Specific aside types */
+.kpg-blog-sidebar-help,
+aside.kpg-blog-sidebar-help {
+  display: block;
+}
+
+.kpg-blog-sidebar-related,
+aside.kpg-blog-sidebar-related {
+  display: block;
+}
+
+/* Ensure semantic tags don't interfere with Elementor */
+.kpg-blog-article .elementor-section,
+.kpg-blog-article .elementor-widget,
+.kpg-blog-article .elementor-container {
+  /* Preserve Elementor styles */
+}
+
+.kpg-blog-sidebar .elementor-section,
+.kpg-blog-sidebar .elementor-widget,
+.kpg-blog-sidebar .elementor-container {
+  /* Preserve Elementor styles */
+}
+
