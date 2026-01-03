@@ -279,7 +279,17 @@ class KPG_Elementor_Blog_Archive_Mobile_Widget extends Widget_Base {
 			
 			<div class="kpg-post-mobile-large-meta">
 				<div class="kpg-post-mobile-large-avatar">
-					<?php echo get_avatar( get_the_author_meta( 'ID' ), 32 ); ?>
+					<?php 
+					$author_id = get_the_author_meta( 'ID' );
+					$avatar_url = kpg_get_author_avatar_url( $author_id, 32 );
+					$first = get_the_author_meta( 'first_name', $author_id );
+					$last = get_the_author_meta( 'last_name', $author_id );
+					$name = trim( $first . ' ' . $last );
+					if ( empty( $name ) ) {
+						$name = get_the_author();
+					}
+					?>
+					<img src="<?php echo esc_url( $avatar_url ); ?>" alt="<?php echo esc_attr( $name ); ?>" width="32" height="32" style="border-radius: 50%;" />
 				</div>
 				<span class="kpg-post-mobile-large-author-date">
 					<?php 
@@ -312,8 +322,16 @@ class KPG_Elementor_Blog_Archive_Mobile_Widget extends Widget_Base {
 			}
 			$pages[] = [ 'number' => $max, 'is_separator' => false ];
 		}
+		
+		// Get blog base URL
+		$posts_page_id = get_option( 'page_for_posts' );
+		if ( $posts_page_id ) {
+			$blog_base_url = rtrim( get_permalink( $posts_page_id ), '/' );
+		} else {
+			$blog_base_url = rtrim( home_url( '/blog' ), '/' );
+		}
 		?>
-		<div class="kpg-blog-pagination">
+		<div class="kpg-blog-pagination" data-blog-base-url="<?php echo esc_attr( $blog_base_url ); ?>">
 			<div class="kpg-blog-pagination-numbers">
 				<?php foreach ( $pages as $page ) : ?>
 					<?php if ( isset( $page['is_separator'] ) && $page['is_separator'] ) : ?>

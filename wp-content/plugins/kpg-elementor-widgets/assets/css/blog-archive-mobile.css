@@ -87,17 +87,24 @@
   display: flex;
   align-items: center;
   gap: 3.2vw; /* 12px */
+  min-width: 0; /* Allow flex child to shrink */
+  overflow: hidden; /* Prevent overflow */
+  max-width: 100%; /* Constrain to parent */
 }
 
 .kpg-post-mobile-author-date {
   font-family: var(--kpg-font-mono);
   font-size: 2.6667vw; /* 10px */
   font-weight: 300;
-  line-height: 1.8667vw; /* 7px */
+  line-height: 3.2vw; /* 12px - minimum 1.2x font-size */
   color: #6f7b7c;
   letter-spacing: 0.1333vw; /* 0.5px */
   text-transform: uppercase;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  min-width: 0; /* Allow flex child to shrink */
 }
 
 /* Large Post (gray rectangle) */
@@ -184,6 +191,9 @@
   gap: 3.2vw; /* 12px */
   width: 78.6667vw; /* 295px */
   margin: 10.1333vw 0 0 0; /* 38px 0 0 0 - bez left bo padding na parent */
+  min-width: 0; /* Allow flex child to shrink */
+  overflow: hidden; /* Prevent overflow */
+  max-width: 100%; /* Constrain to parent */
 }
 
 .kpg-post-mobile-large-avatar {
@@ -204,11 +214,15 @@
   font-family: var(--kpg-font-mono);
   font-size: 3.2vw; /* 12px */
   font-weight: 300;
-  line-height: 2.1333vw; /* 8px */
+  line-height: 3.84vw; /* 14.4px - minimum 1.2x font-size */
   color: #6f7b7c;
   text-transform: uppercase;
   white-space: nowrap;
   letter-spacing: -0.064vw; /* -0.24px */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  min-width: 0; /* Allow flex child to shrink */
 }
 
 /* PAGINATION - TYLKO MOBILE */

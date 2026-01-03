@@ -144,6 +144,26 @@ class KPG_Elementor_Breadcrumbs_Widget extends Widget_Base {
 
 		// Single post
 		if ( is_single() ) {
+			// Add "blog" page before post title
+			$posts_page_id = get_option( 'page_for_posts' );
+			if ( $posts_page_id ) {
+				$posts_page_url = get_permalink( $posts_page_id );
+				$posts_page_title = get_the_title( $posts_page_id );
+				$items[] = [
+					'label' => $posts_page_title,
+					'url'   => $posts_page_url,
+					'type'  => 'blog',
+				];
+			} else {
+				// Fallback to "blog" if no posts page is set
+				$items[] = [
+					'label' => __( 'blog', 'kpg-elementor-widgets' ),
+					'url'   => home_url( '/blog/' ),
+					'type'  => 'blog',
+				];
+			}
+			
+			// Add post title
 			$items[] = [
 				'label' => get_the_title(),
 				'url'   => '',
@@ -152,44 +172,38 @@ class KPG_Elementor_Breadcrumbs_Widget extends Widget_Base {
 		}
 		// Category archive
 		elseif ( is_category() ) {
-			// Use get_queried_object_id() first to avoid null issues with Rank Math SEO
-			$cat_id = get_queried_object_id();
-			if ( $cat_id ) {
-				$cat = get_category( $cat_id );
-				if ( $cat && ! is_wp_error( $cat ) && isset( $cat->name ) ) {
-					$items[] = [
-						'label' => $cat->name,
-						'url'   => '',
-						'type'  => 'current',
-					];
-				}
+			$cat = get_queried_object();
+			// Better check to avoid conflicts with Rank Math SEO
+			if ( $cat && is_object( $cat ) && isset( $cat->name ) && isset( $cat->taxonomy ) && $cat->taxonomy === 'category' ) {
+				$items[] = [
+					'label' => $cat->name,
+					'url'   => '',
+					'type'  => 'current',
+				];
 			}
 		}
 		// Author archive - IMPORTANT: Use first_name + last_name (Prompt #52)
 		elseif ( is_author() ) {
-			// Use get_queried_object_id() first to avoid null issues with Rank Math SEO
-			$author_id = get_queried_object_id();
-			if ( $author_id ) {
-				$author = get_userdata( $author_id );
-				if ( $author && isset( $author->ID ) ) {
-					// Get first name and last name (NOT display_name)
-					$first_name = get_the_author_meta( 'first_name', $author->ID );
-					$last_name = get_the_author_meta( 'last_name', $author->ID );
-					
-					// Combine first and last name
-					$full_name = trim( $first_name . ' ' . $last_name );
-					
-					// Fallback to display_name if both are empty
-					if ( empty( $full_name ) ) {
-						$full_name = $author->display_name;
-					}
-					
-					$items[] = [
-						'label' => $full_name,
-						'url'   => '',
-						'type'  => 'current',
-					];
+			$author = get_queried_object();
+			// Better check to avoid conflicts with Rank Math SEO
+			if ( $author && is_object( $author ) && isset( $author->ID ) && isset( $author->user_login ) ) {
+				// Get first name and last name (NOT display_name)
+				$first_name = get_the_author_meta( 'first_name', $author->ID );
+				$last_name = get_the_author_meta( 'last_name', $author->ID );
+				
+				// Combine first and last name
+				$full_name = trim( $first_name . ' ' . $last_name );
+				
+				// Fallback to display_name if both are empty
+				if ( empty( $full_name ) ) {
+					$full_name = $author->display_name;
 				}
+				
+				$items[] = [
+					'label' => $full_name,
+					'url'   => '',
+					'type'  => 'current',
+				];
 			}
 		}
 		// Blog archive or posts page - IMPORTANT: Get page title (Prompt #51)
@@ -201,6 +215,14 @@ class KPG_Elementor_Breadcrumbs_Widget extends Widget_Base {
 				$posts_page_id = get_option( 'page_for_posts' );
 				if ( $posts_page_id ) {
 					$archive_label = get_the_title( $posts_page_id );
+				}
+			}
+			
+			// If it's a page object, get its title (with better check)
+			if ( empty( $archive_label ) ) {
+				$queried_object = get_queried_object();
+				if ( $queried_object && is_a( $queried_object, 'WP_Post' ) && isset( $queried_object->ID ) ) {
+					$archive_label = get_the_title( $queried_object->ID );
 				}
 			}
 			

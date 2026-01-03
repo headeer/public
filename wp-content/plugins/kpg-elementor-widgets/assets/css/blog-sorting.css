@@ -19,7 +19,6 @@
 .kpg_sorting-container {
   position: relative;
   width: 100%;
-  margin-bottom: 8.5333vw; /* 32px / 375px * 100vw - from Prompt #4 */
 }
 
 .kpg_sorting-container-inner {
@@ -165,7 +164,6 @@
 
 @media screen and (min-width: 1025px) {
   .kpg_sorting-container {
-    margin-bottom: 1.8868vw; /* 32px / 1696px * 100vw */
   }
 
   .kpg_sorting-container-inner {

@@ -371,3 +371,4 @@ _Hovery naprawione zgodnie z paletą kolorów KPG_
 _Gotowe do testowania!_
 
 
+

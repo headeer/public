@@ -59,7 +59,7 @@ class KPG_Elementor_Blog_Content_Widget extends Widget_Base {
 			[
 				'label' => esc_html__( 'Show Important Section', 'kpg-elementor-widgets' ),
 				'type' => Controls_Manager::SWITCHER,
-				'default' => 'yes',
+				'default' => 'no', // Changed from 'yes' to 'no' - section should be opt-in, not opt-out
 			]
 		);
 
@@ -230,7 +230,7 @@ class KPG_Elementor_Blog_Content_Widget extends Widget_Base {
 				if ( empty( $sections ) || ( count( $sections ) === 1 && empty( $sections[0]['heading'] ) && empty( trim( $sections[0]['content'] ) ) ) || $is_elementor ) {
 					// Placeholder for JavaScript parsing
 					?>
-					<div class="kpg-blog-content-placeholder" data-post-id="<?php echo esc_attr( $post->ID ); ?>" data-important-position="<?php echo esc_attr( $settings['show_important_section'] === 'yes' ? $settings['important_position'] : '' ); ?>" data-important-text="<?php echo esc_attr( $settings['show_important_section'] === 'yes' ? $settings['important_text'] : '' ); ?>">
+					<div class="kpg-blog-content-placeholder" data-post-id="<?php echo esc_attr( $post->ID ); ?>" data-show-important="<?php echo esc_attr( $settings['show_important_section'] === 'yes' ? 'yes' : 'no' ); ?>" data-important-position="<?php echo esc_attr( $settings['show_important_section'] === 'yes' ? $settings['important_position'] : '' ); ?>" data-important-text="<?php echo esc_attr( $settings['show_important_section'] === 'yes' ? $settings['important_text'] : '' ); ?>">
 						<!-- Content will be parsed from Elementor output by JavaScript -->
 					</div>
 					<?php
@@ -324,7 +324,7 @@ class KPG_Elementor_Blog_Content_Widget extends Widget_Base {
 		$author_title = get_user_meta( $author_id, 'author_title', true ) ?: 'RADCA PRAWNY';
 		$author_linkedin = get_user_meta( $author_id, 'author_linkedin', true ) ?: '';
 		$author_facebook = get_user_meta( $author_id, 'author_facebook', true ) ?: '';
-		$author_image = get_avatar_url( $author_id, [ 'size' => 251 ] );
+		$author_image = kpg_get_author_avatar_url( $author_id, 251 );
 		
 		?>
 		<div class="kpg-blog-author-section">

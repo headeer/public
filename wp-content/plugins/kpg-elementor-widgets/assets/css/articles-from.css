@@ -132,7 +132,7 @@
 }
 
 .kpg-articles-from-social-link:hover {
-  color: var(--kpg-green);
+  color: #E9EF3C; /* Kolor strony - żółty */
 }
 
 /* DESKTOP */

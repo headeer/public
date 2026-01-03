@@ -508,3 +508,4 @@ tar -czf backup-wp-content-$(date +%Y%m%d-%H%M).tar.gz wp-content/
 _Dokument podsumowujący stan prac po utworzeniu struktury i pierwszego widgetu_
 
 
+

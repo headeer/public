@@ -201,3 +201,4 @@ git commit -m "KPG Elementor Widgets - 10 widgetów gotowych"
 _Następny: Team Slider (jeśli chcesz) lub KONIEC!_
 
 
+

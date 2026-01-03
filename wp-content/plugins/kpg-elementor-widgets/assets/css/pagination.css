@@ -163,6 +163,26 @@
   box-sizing: border-box;
 }
 
+/* Blokuj działanie linków w paginacji - elementy NIE powinny być linkami */
+.kpg-blog-pagination-item a,
+.kpg-blog-pagination-item[href],
+.kpg-blog-pagination-item a[href] {
+  pointer-events: none !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+/* Upewnij się, że elementy paginacji nie są linkami */
+.kpg-blog-pagination-item {
+  display: inline-block !important;
+}
+
+/* Jeśli jakiś plugin/theme konwertuje na linki, zablokuj to */
+.kpg-blog-pagination a.kpg-blog-pagination-item {
+  pointer-events: none !important;
+}
+
 /* ============================================
    ACCESSIBILITY
    ============================================ */

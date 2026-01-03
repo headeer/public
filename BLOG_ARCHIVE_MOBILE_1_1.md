@@ -224,3 +224,4 @@ _Dokładnie zaimplementowany design mobilny_
 **Gotowe do testowania!** 🚀
 
 
+

@@ -171,12 +171,13 @@ class KPG_Elementor_TOC_Widget extends Widget_Base {
 		$sticky_class = ( $settings['sticky_desktop'] === 'yes' ) ? 'kpg-toc-sticky' : '';
 		$sticky_offset = isset( $settings['sticky_offset'] ) ? intval( $settings['sticky_offset'] ) : 40;
 		?>
-		<div class="kpg-toc-container <?php echo esc_attr( $sticky_class ); ?>" 
-			 data-sticky-offset="<?php echo esc_attr( $sticky_offset ); ?>">
+		<nav class="kpg-toc-container <?php echo esc_attr( $sticky_class ); ?>" 
+			 data-sticky-offset="<?php echo esc_attr( $sticky_offset ); ?>"
+			 aria-label="<?php esc_attr_e( 'Spis treści', 'kpg-elementor-widgets' ); ?>">
 			<div class="kpg-toc-header">
-				<h3 class="kpg-toc-title"><?php echo esc_html( $settings['title'] ); ?></h3>
+				<div class="kpg-toc-title"><?php echo esc_html( $settings['title'] ); ?></div>
 			</div>
-			<nav class="kpg-toc-nav" aria-label="<?php esc_attr_e( 'Spis treści', 'kpg-elementor-widgets' ); ?>">
+			<div class="kpg-toc-nav">
 				<ul class="kpg-toc-list">
 					<?php foreach ( $headings as $heading ) : ?>
 						<li class="kpg-toc-item kpg-toc-item--<?php echo esc_attr( $heading['level'] ); ?>">
@@ -191,8 +192,8 @@ class KPG_Elementor_TOC_Widget extends Widget_Base {
 						</li>
 					<?php endforeach; ?>
 				</ul>
-			</nav>
-		</div>
+			</div>
+		</nav>
 		
 		<!-- Add IDs to actual headings in content -->
 		<script>
@@ -256,11 +257,11 @@ class KPG_Elementor_TOC_Widget extends Widget_Base {
 		var showNumbers = settings.show_numbers === 'yes';
 		var stickyClass = settings.sticky_desktop === 'yes' ? 'kpg-toc-sticky' : '';
 		#>
-		<div class="kpg-toc-container {{{ stickyClass }}}">
+		<nav class="kpg-toc-container {{{ stickyClass }}}" aria-label="Spis treści">
 			<div class="kpg-toc-header">
-				<h3 class="kpg-toc-title">{{{ title }}}</h3>
+				<div class="kpg-toc-title">{{{ title }}}</div>
 			</div>
-			<nav class="kpg-toc-nav">
+			<div class="kpg-toc-nav">
 				<ul class="kpg-toc-list">
 					<li class="kpg-toc-item kpg-toc-item--h2">
 						<a href="#section-1" class="kpg-toc-link">
@@ -287,8 +288,8 @@ class KPG_Elementor_TOC_Widget extends Widget_Base {
 						</a>
 					</li>
 				</ul>
-			</nav>
-		</div>
+			</div>
+		</nav>
 		<?php
 	}
 }

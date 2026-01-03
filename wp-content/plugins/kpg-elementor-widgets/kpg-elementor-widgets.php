@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class KPG_Elementor_Widgets {
 
-	const VERSION = '1.0.0';
+	const VERSION = '1.0.4';
 	const MINIMUM_ELEMENTOR_VERSION = '3.0.0';
 	const MINIMUM_PHP_VERSION = '7.4';
 
@@ -39,6 +39,7 @@ final class KPG_Elementor_Widgets {
 	 */
 	public function __construct() {
 		add_action( 'plugins_loaded', [ $this, 'init' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 	}
 
 	/**
@@ -65,13 +66,22 @@ final class KPG_Elementor_Widgets {
 
 		// Load Elementor loop integration
 		require_once( __DIR__ . '/includes/elementor-loop-integration.php' );
-
+		
+		// Load blog permalink fix - DISABLED due to Rank Math SEO conflicts
+		// require_once( __DIR__ . '/includes/blog-permalink-fix.php' );
+		
+		// Load user profile fields
+		require_once( __DIR__ . '/includes/user-profile-fields.php' );
+		
 		// Register widget styles and scripts
 		add_action( 'elementor/frontend/after_register_styles', [ $this, 'register_styles' ] );
 		add_action( 'elementor/frontend/after_register_scripts', [ $this, 'register_scripts' ] );
 
 		// Enqueue global styles (spis responsive)
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_global_styles' ] );
+		
+		// Enqueue blog structure script on single posts
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_blog_structure_script' ] );
 
 		// Register widgets
 		add_action( 'elementor/widgets/register', [ $this, 'register_widgets' ] );
@@ -434,10 +444,34 @@ final class KPG_Elementor_Widgets {
 			self::VERSION
 		);
 
+		// Blog Featured Desktop
+		wp_register_style(
+			'kpg-blog-featured-desktop-style',
+			plugins_url( 'assets/css/blog-featured-desktop.css', __FILE__ ),
+			[],
+			self::VERSION
+		);
+
+		// Blog Featured Mobile
+		wp_register_style(
+			'kpg-blog-featured-mobile-style',
+			plugins_url( 'assets/css/blog-featured-mobile.css', __FILE__ ),
+			[],
+			self::VERSION
+		);
+
 		// Spis Responsive (spis_mobile / spis_desktop)
 		wp_register_style(
 			'kpg-spis-responsive-style',
 			plugins_url( 'assets/css/spis-responsive.css', __FILE__ ),
+			[],
+			self::VERSION
+		);
+
+		// Blog Semantic HTML (article/aside styles)
+		wp_register_style(
+			'kpg-blog-semantic-style',
+			plugins_url( 'assets/css/blog-semantic.css', __FILE__ ),
 			[],
 			self::VERSION
 		);
@@ -525,6 +559,16 @@ final class KPG_Elementor_Widgets {
 	 */
 	public function enqueue_global_styles() {
 		wp_enqueue_style( 'kpg-spis-responsive-style' );
+	}
+
+	/**
+	 * Enqueue blog structure script on single posts
+	 */
+	public function enqueue_blog_structure_script() {
+		if ( is_single() && get_post_type() === 'post' ) {
+			wp_enqueue_script( 'kpg-blog-structure-script' );
+			wp_enqueue_style( 'kpg-blog-semantic-style' );
+		}
 	}
 
 	/**
@@ -619,11 +663,39 @@ final class KPG_Elementor_Widgets {
 			$widgets_manager->register( new \KPG_Elementor_Post_Meta_Bar_Widget() );
 		}
 
+		// Widget 12: Blog Featured ✅ READY
+		if ( file_exists( __DIR__ . '/widgets/blog-featured.php' ) ) {
+			require_once( __DIR__ . '/widgets/blog-featured.php' );
+			$widgets_manager->register( new \KPG_Elementor_Blog_Featured_Widget() );
+		}
+
 		// Bonus: O Nas ⏳ TODO
 		if ( file_exists( __DIR__ . '/widgets/onas.php' ) ) {
 			require_once( __DIR__ . '/widgets/onas.php' );
 			$widgets_manager->register( new \KPG_Elementor_Onas_Widget() );
 		}
+	}
+
+	/**
+	 * Enqueue admin scripts for user profile avatar upload
+	 */
+	public function enqueue_admin_scripts( $hook ) {
+		// Only load on user profile/edit user pages
+		if ( $hook !== 'user-edit.php' && $hook !== 'profile.php' ) {
+			return;
+		}
+
+		// Enqueue WordPress media uploader
+		wp_enqueue_media();
+
+		// Enqueue custom script
+		wp_enqueue_script(
+			'kpg-user-profile-avatar',
+			plugins_url( 'assets/js/user-profile-avatar.js', __FILE__ ),
+			[ 'jquery' ],
+			self::VERSION,
+			true
+		);
 	}
 }
 

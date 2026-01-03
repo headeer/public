@@ -19,6 +19,7 @@
 		}
 
 		// Get settings from placeholder
+		var showImportant = $placeholder.data('show-important') === 'yes';
 		var importantPosition = $placeholder.data('important-position') || '';
 		var importantText = $placeholder.data('important-text') || '';
 
@@ -121,7 +122,7 @@
 				html += '</div></div></div>';
 				
 				// Insert Important Section if needed
-				if (importantPosition && importantText && !importantRendered) {
+				if (showImportant && importantPosition && importantText && !importantRendered) {
 					var shouldInsert = false;
 					
 					if (importantPosition === 'after_' + sectionNumber) {

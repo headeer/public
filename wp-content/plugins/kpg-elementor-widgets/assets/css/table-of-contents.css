@@ -52,6 +52,7 @@
   text-transform: uppercase;
   white-space: nowrap;
   letter-spacing: -0.0189vw; /* -0.32px / 1696px */
+  display: block; /* Make div behave like block element */
 }
 
 /* Navigation */
@@ -172,5 +173,16 @@
 /* Reset WP styles */
 .kpg-toc-container a {
   text-decoration: none !important;
+}
+
+/* Make TOC container behave as nav element */
+.kpg-toc-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure nav inside TOC is properly styled */
+.kpg-toc-nav {
+  width: 100%;
 }
 

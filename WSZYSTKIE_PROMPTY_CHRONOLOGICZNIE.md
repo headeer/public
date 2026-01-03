@@ -769,3 +769,4 @@ dalej na mobile kpg-team-slider-navigation to ma byc nad tym kpg-team-slider-top
 _Dokument chronologiczny - pokazuje ewolucję projektu i proces debugowania_
 
 
+

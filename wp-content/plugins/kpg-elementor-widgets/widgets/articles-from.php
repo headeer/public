@@ -109,11 +109,17 @@ class KPG_Elementor_Articles_From_Widget extends Widget_Base {
 		}
 
 		// Avatar
-		$avatar = get_avatar_url( $author_id, [ 'size' => 300 ] );
+		$avatar = kpg_get_author_avatar_url( $author_id, 300 );
 
-		// Social
-		$linkedin = get_user_meta( $author_id, 'linkedin_url', true );
-		$facebook = get_user_meta( $author_id, 'facebook_url', true );
+		// Social (check both old and new field names for backward compatibility)
+		$linkedin = get_user_meta( $author_id, 'author_linkedin', true );
+		if ( empty( $linkedin ) ) {
+			$linkedin = get_user_meta( $author_id, 'linkedin_url', true );
+		}
+		$facebook = get_user_meta( $author_id, 'author_facebook', true );
+		if ( empty( $facebook ) ) {
+			$facebook = get_user_meta( $author_id, 'facebook_url', true );
+		}
 
 		return [
 			'name' => $name,

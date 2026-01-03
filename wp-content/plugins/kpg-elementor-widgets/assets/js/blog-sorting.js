@@ -166,7 +166,7 @@
 	});
 
 	// Re-initialize for Elementor editor
-	if (typeof elementorFrontend !== 'undefined') {
+	if (typeof elementorFrontend !== 'undefined' && elementorFrontend.hooks) {
 		elementorFrontend.hooks.addAction('frontend/element_ready/kpg-blog-sorting.default', function($scope) {
 			initSorting();
 		});

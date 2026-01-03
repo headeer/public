@@ -48,3 +48,4 @@ Zgłoszenia mogą być anonimowe lub podpisane – w obu przypadkach ustawa wyma
 - Sekcja o autorze jest zawsze na końcu i pobiera dane z profilu autora posta
 
 
+

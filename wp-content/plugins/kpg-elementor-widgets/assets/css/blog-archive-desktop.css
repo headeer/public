@@ -10,6 +10,7 @@
 .kpg-blog-desktop-container {
   position: relative;
   width: 73.1132vw; /* 1240px / 1696px */
+  max-width: 1240px; /* Limit max width for 4K screens */
   margin: 0 auto;
   padding: 0;
 }

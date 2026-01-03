@@ -46,15 +46,34 @@
 
 .kpg-breadcrumbs-item a,
 a.kpg-breadcrumbs-item {
+  position: relative;
   color: var(--kpg-dark); /* #404848 */
   text-decoration: none;
   transition: color 0.2s ease;
+  overflow: hidden; /* Aby ukryć podkreślenie poza linkiem */
+}
+
+.kpg-breadcrumbs-item a::after,
+a.kpg-breadcrumbs-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 0.2667vw; /* 1px / 375px */
+  background-color: var(--kpg-dark); /* #404848 */
+  transition: width 0.3s ease;
 }
 
 .kpg-breadcrumbs-item a:hover,
 a.kpg-breadcrumbs-item:hover {
-  color: var(--kpg-green); /* #0d8e67 */
+  color: var(--kpg-dark); /* #404848 - bez zmiany koloru */
   text-decoration: none;
+}
+
+.kpg-breadcrumbs-item a:hover::after,
+a.kpg-breadcrumbs-item:hover::after {
+  width: 100%; /* Animacja od lewej do prawej */
 }
 
 .kpg-breadcrumbs-item--current {
@@ -90,6 +109,11 @@ a.kpg-breadcrumbs-item:hover {
     letter-spacing: 0.0354vw; /* 0.6px / 1696px */
   }
 
+  .kpg-breadcrumbs-item a::after,
+  a.kpg-breadcrumbs-item::after {
+    height: 0.0590vw; /* 1px / 1696px */
+  }
+
   .kpg-breadcrumbs-separator {
     font-size: 0.7076vw; /* 12px / 1696px */
   }
@@ -112,11 +136,16 @@ a.kpg-breadcrumbs-item:hover {
 
 .kpg-breadcrumbs a:hover,
 .kpg-breadcrumbs a:focus {
-  color: var(--kpg-green) !important; /* #0d8e67 */
+  color: var(--kpg-dark) !important; /* #404848 - bez zmiany koloru */
   text-decoration: none !important;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
+}
+
+.kpg-breadcrumbs a:hover::after,
+.kpg-breadcrumbs a:focus::after {
+  width: 100% !important; /* Animacja od lewej do prawej */
 }
 
 /* ============================================

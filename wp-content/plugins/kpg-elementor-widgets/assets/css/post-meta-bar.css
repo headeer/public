@@ -51,6 +51,8 @@
   display: flex;
   flex-direction: row; /* mobile: horizontal */
   gap: 0;
+  min-width: 0; /* Allow flex child to shrink */
+  overflow: hidden; /* Prevent overflow */
 }
 
 .kpg-post-meta-author-label {
@@ -61,11 +63,15 @@
   font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 3.2vw; /* 12px / 375px */
   font-weight: 300;
-  line-height: 2.1333vw; /* 8px / 375px */
+  line-height: 3.84vw; /* 14.4px / 375px - minimum 1.2x font-size */
   color: #6f7b7c;
   text-transform: uppercase;
   white-space: nowrap;
   letter-spacing: 0.16vw; /* 0.6px / 375px */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  min-width: 0; /* Allow flex child to shrink */
 }
 
 /* Date section - ukryte na mobile (część author-name) */
@@ -96,7 +102,68 @@
 }
 
 .kpg-post-meta-share-buttons {
-  display: none; /* zawsze ukryte, share przez natywne API */
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: #fff;
+  border: 1px solid #e3ebec;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 160px; /* Większa szerokość dla pełnych nazw */
+}
+
+.kpg-post-meta-share-buttons.show {
+  display: flex;
+}
+
+.kpg-post-meta-share-section {
+  position: relative;
+}
+
+.kpg-share-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f7f9f9;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--kpg-font-mono);
+  font-size: 12px;
+  color: #404848;
+  text-align: left;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-decoration: none;
+}
+
+.kpg-share-btn-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+.kpg-share-btn-text {
+  flex: 1;
+}
+
+.kpg-share-btn:hover {
+  background: transparent!important;
+  text-decoration: underline!important;
+  color: #404848!important;
+}
+
+.kpg-share-btn:hover .kpg-share-btn-icon {
+  color: inherit;
 }
 
 /* ============================================
@@ -126,6 +193,8 @@
     flex-direction: column;
     gap: 0.4717vw; /* 8px / 1696px */
     width: 11.0260vw; /* 187px / 1696px */
+    min-width: 0; /* Allow flex child to shrink */
+    overflow: hidden; /* Prevent overflow */
   }
 
   .kpg-post-meta-author-label {
@@ -140,10 +209,15 @@
 
   .kpg-post-meta-author-name {
     font-size: 0.9434vw; /* 16px / 1696px */
-    line-height: 0.6484vw; /* 11px / 1696px */
+    line-height: 1.1321vw; /* 19.2px / 1696px - minimum 1.2x font-size */
     color: #404848; /* czarny na desktop */
     text-transform: uppercase;
     letter-spacing: 0.0472vw; /* 0.8px / 1696px */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    min-width: 0; /* Allow flex child to shrink */
   }
 
   /* Center: Date section (shows on desktop) */
