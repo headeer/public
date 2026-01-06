@@ -202,3 +202,4 @@ _Następny: Team Slider (jeśli chcesz) lub KONIEC!_
 
 
 
+

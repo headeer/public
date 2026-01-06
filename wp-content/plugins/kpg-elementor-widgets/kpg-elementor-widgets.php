@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class KPG_Elementor_Widgets {
 
-	const VERSION = '1.0.4';
+	const VERSION = '1.0.5';
 	const MINIMUM_ELEMENTOR_VERSION = '3.0.0';
 	const MINIMUM_PHP_VERSION = '7.4';
 
@@ -72,6 +72,9 @@ final class KPG_Elementor_Widgets {
 		
 		// Load user profile fields
 		require_once( __DIR__ . '/includes/user-profile-fields.php' );
+		
+		// Load author permalink settings
+		require_once( __DIR__ . '/includes/author-permalink-settings.php' );
 		
 		// Register widget styles and scripts
 		add_action( 'elementor/frontend/after_register_styles', [ $this, 'register_styles' ] );
@@ -552,6 +555,15 @@ final class KPG_Elementor_Widgets {
 			self::VERSION,
 			true
 		);
+
+		// Blog Search - Fill search field from URL
+		wp_register_script(
+			'kpg-blog-search-script',
+			plugins_url( 'assets/js/blog-search.js', __FILE__ ),
+			[],
+			self::VERSION,
+			true
+		);
 	}
 
 	/**
@@ -568,6 +580,11 @@ final class KPG_Elementor_Widgets {
 		if ( is_single() && get_post_type() === 'post' ) {
 			wp_enqueue_script( 'kpg-blog-structure-script' );
 			wp_enqueue_style( 'kpg-blog-semantic-style' );
+		}
+		
+		// Enqueue search script on blog pages (archive, search results)
+		if ( is_home() || is_archive() || is_search() || ( get_option( 'page_for_posts' ) && is_page( get_option( 'page_for_posts' ) ) ) ) {
+			wp_enqueue_script( 'kpg-blog-search-script' );
 		}
 	}
 

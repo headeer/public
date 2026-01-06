@@ -4,6 +4,14 @@
  * Style dla wyświetlania treści bloga z numeracją sekcji
  */
 
+/* Article wrapper - ensures styles work correctly */
+article.kpg-blog-article {
+	display: block;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
 /* Container */
 .kpg-blog-content-container {
   position: relative;
@@ -475,6 +483,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
+  flex-direction: column;
   align-self: stretch;
   flex-shrink: 0;
   position: relative;

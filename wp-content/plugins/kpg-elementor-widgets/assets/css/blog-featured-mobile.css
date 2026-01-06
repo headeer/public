@@ -65,6 +65,8 @@
 	display: block;
 	text-decoration: none;
 	z-index: 1;
+	overflow: hidden;
+	border-radius: 6.853px;
 }
 
 .kpg-blog-featured-mobile-image {
@@ -72,10 +74,11 @@
 	width: 100%;
 	height: 100%;
 	background-size: cover;
-	background-position: center;
+	background-position: center center;
 	background-repeat: no-repeat;
 	border-radius: 6.853px;
 	transition: opacity 0.3s ease;
+	overflow: hidden;
 }
 
 .kpg-blog-featured-mobile-image-link:hover .kpg-blog-featured-mobile-image {

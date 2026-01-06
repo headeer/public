@@ -263,3 +263,4 @@ class KPG_Elementor_Pagination_Widget extends Widget_Base {
 
 
 
+

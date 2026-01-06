@@ -46,6 +46,21 @@ add_filter( 'post_link', 'kpg_add_blog_prefix_to_post_permalink', 20, 2 );
 add_filter( 'post_type_link', 'kpg_add_blog_prefix_to_post_permalink', 20, 2 );
 
 /**
+ * Change author base from /author/ to /autor/
+ * NOTE: This is now handled by author-permalink-settings.php
+ * Keeping this for backward compatibility, but it will be overridden by settings
+ */
+function kpg_change_author_base_legacy() {
+	global $wp_rewrite;
+	// Only apply if no setting exists (backward compatibility)
+	if ( ! get_option( 'author_base' ) ) {
+		$wp_rewrite->author_base = 'autor';
+	}
+}
+// Lower priority so settings can override
+add_action( 'init', 'kpg_change_author_base_legacy', 2 );
+
+/**
  * Add rewrite rules for /blog/ prefix
  */
 function kpg_add_blog_rewrite_rules() {
@@ -183,11 +198,15 @@ add_action( 'wp', 'kpg_fix_queried_object_for_rankmath', 5 );
  */
 function kpg_flush_rewrite_rules_if_needed() {
 	// Check version to force flush when rewrite rules change
-	$current_version = '2.2'; // Increment this when rewrite rules change
+	$current_version = '2.3'; // Increment this when rewrite rules change (2.3 = added author base change)
 	$flushed_version = get_option( 'kpg_blog_permalink_flushed_version' );
 	
 	if ( $flushed_version !== $current_version ) {
+		// Change author base
+		kpg_change_author_base();
+		// Add blog rewrite rules
 		kpg_add_blog_rewrite_rules();
+		// Flush rewrite rules
 		flush_rewrite_rules( false ); // false = don't write to .htaccess, just update rules
 		update_option( 'kpg_blog_permalink_flushed_version', $current_version );
 		update_option( 'kpg_blog_permalink_flushed', '1' );

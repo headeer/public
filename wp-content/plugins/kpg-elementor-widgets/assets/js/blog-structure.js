@@ -27,105 +27,131 @@
 	 * Includes: title, post meta bar, TOC, blog content, author section, comments
 	 */
 	function wrapContentInArticle() {
-		// Find all blog-related elements
-		// 1. Post title - look for common title selectors
-		var $title = $('h1.entry-title, h1.post-title, .elementor-heading-title:first, h1:first').first();
+		// Remove any existing article tags that were incorrectly placed
+		$('article.kpg-blog-article').each(function() {
+			var $article = $(this);
+			var $children = $article.children();
+			$children.unwrap();
+		});
 		
-		// If no title found, try to find it in Elementor
+		// Find all blog-related elements (only on single post pages)
+		if (!$('body.single-post, body.single').length && !$('[data-elementor-type="single-post"]').length) {
+			return;
+		}
+		
+		// 1. Post title - look for Elementor theme-post-title widget
+		var $title = $('.elementor-widget-theme-post-title h1, .elementor-widget-theme-post-title .elementor-heading-title').first();
 		if (!$title.length) {
-			// Look for Elementor heading widget that might be the title
-			$title = $('.elementor-widget-heading h1, .elementor-widget-heading h2').first();
+			$title = $('h1.entry-title, h1.post-title, .elementor-heading-title:first').first();
+		}
+		if (!$title.length) {
+			$title = $('.elementor-widget-heading h1').first();
 		}
 		
 		// 2. Post meta bar
 		var $postMetaBar = $('.kpg-post-meta-bar').first();
 		
-		// 3. Table of Contents
-		var $toc = $('.kpg-toc-container').first();
+		// 3. Table of Contents (take first visible one)
+		var $toc = $('.kpg-toc-container:visible').first();
+		if (!$toc.length) {
+			$toc = $('.kpg-toc-container').first();
+		}
 		
 		// 4. Blog content
 		var $blogContent = $('.kpg-blog-content-container').first();
 		
-		// 5. Author section
+		// 5. Author section (already inside blog-content, but we'll include the whole container)
 		var $authorSection = $('.kpg-blog-author-section').first();
 		
 		// 6. Comments
-		var $comments = $('#comments, .comments-area, .wp-block-comments, .kpg-comments-container').first();
-		
-		// Check if already wrapped
-		if ($postMetaBar.length && $postMetaBar.closest('article').length > 0) {
-			return;
-		}
-		if ($blogContent.length && $blogContent.closest('article').length > 0) {
-			return;
+		var $comments = $('.kpg-comments-container').first();
+		if (!$comments.length) {
+			$comments = $('#comments, .comments-area, .wp-block-comments').first();
 		}
 		
-		// Collect all elements that should be in article
+		// Check if already wrapped in article
+		if ($postMetaBar.length && $postMetaBar.closest('article.kpg-blog-article').length > 0) {
+			return;
+		}
+		
+		// Collect all elements that should be in article (in order)
 		var $elements = $();
 		
 		// Add title if found and not already in article
-		if ($title.length && !$title.closest('article').length) {
+		if ($title.length && !$title.closest('article.kpg-blog-article').length) {
 			$elements = $elements.add($title);
 		}
 		
 		// Add post meta bar
-		if ($postMetaBar.length && !$postMetaBar.closest('article').length) {
+		if ($postMetaBar.length && !$postMetaBar.closest('article.kpg-blog-article').length) {
 			$elements = $elements.add($postMetaBar);
 		}
 		
 		// Add TOC
-		if ($toc.length && !$toc.closest('article').length) {
+		if ($toc.length && !$toc.closest('article.kpg-blog-article').length) {
 			$elements = $elements.add($toc);
 		}
 		
-		// Add blog content
-		if ($blogContent.length && !$blogContent.closest('article').length) {
+		// Add blog content (includes author section)
+		if ($blogContent.length && !$blogContent.closest('article.kpg-blog-article').length) {
 			$elements = $elements.add($blogContent);
 		}
 		
-		// Add author section (if not already inside blog content)
-		if ($authorSection.length && !$authorSection.closest('.kpg-blog-content-container').length && !$authorSection.closest('article').length) {
-			$elements = $elements.add($authorSection);
-		}
-		
 		// Add comments
-		if ($comments.length && !$comments.closest('article').length) {
+		if ($comments.length && !$comments.closest('article.kpg-blog-article').length) {
 			$elements = $elements.add($comments);
 		}
 		
 		// If we have elements to wrap
 		if ($elements.length > 0) {
-			// Try to find a common parent container first
-			var $commonParent = null;
+			// Find the first element's parent container that contains all elements
+			var $firstElement = $elements.first();
+			var $container = $firstElement.parent();
 			
-			// If all elements share a parent, use that
-			if ($elements.length > 1) {
-				var parents = [];
+			// Try to find Elementor container that wraps all these elements
+			var $elementorContainer = $firstElement.closest('[data-elementor-type="single-post"]');
+			if ($elementorContainer.length) {
+				// Check if all elements are within this container
+				var allInContainer = true;
 				$elements.each(function() {
-					parents.push($(this).parent()[0]);
+					if (!$.contains($elementorContainer[0], this)) {
+						allInContainer = false;
+						return false;
+					}
 				});
 				
-				// Check if all have the same parent
-				var allSameParent = parents.every(function(val, i, arr) {
-					return val === arr[0];
-				});
-				
-				if (allSameParent && parents[0]) {
-					$commonParent = $(parents[0]);
+				if (allInContainer) {
+					// Find the section that contains title, meta, TOC, content, comments
+					// Look for the container that wraps these widgets
+					var $widgetContainer = $firstElement.closest('.e-con, .elementor-element');
+					
+					// Try to find common parent of all elements
+					var $commonParent = $firstElement.parent();
+					$elements.each(function() {
+						var $el = $(this);
+						var $parent = $el.parent();
+						// Find common ancestor
+						while ($commonParent.length && !$.contains($commonParent[0], this)) {
+							$commonParent = $commonParent.parent();
+						}
+					});
+					
+					// If we found a reasonable common parent (not body/html)
+					if ($commonParent.length && 
+						!$commonParent.is('body') && 
+						!$commonParent.is('html') && 
+						!$commonParent.closest('article.kpg-blog-article').length &&
+						$commonParent.find($elements).length === $elements.length) {
+						$commonParent.wrap('<article class="kpg-blog-article"></article>');
+						console.log('KPG Blog Structure: Wrapped common parent container in <article>');
+						return;
+					}
 				}
 			}
 			
-			// If we found a common parent that's not body or html, wrap it
-			if ($commonParent && $commonParent.length && 
-				!$commonParent.is('body') && !$commonParent.is('html') && 
-				!$commonParent.closest('article').length) {
-				$commonParent.wrap('<article class="kpg-blog-article"></article>');
-				console.log('KPG Blog Structure: Wrapped common parent container in <article>');
-			} else {
-				// Otherwise, wrap all elements together
-				$elements.wrapAll('<article class="kpg-blog-article"></article>');
-				console.log('KPG Blog Structure: Wrapped', $elements.length, 'elements in <article> (title, meta, TOC, content, author, comments)');
-			}
+			// Fallback: wrap all elements together
+			$elements.wrapAll('<article class="kpg-blog-article"></article>');
+			console.log('KPG Blog Structure: Wrapped', $elements.length, 'elements in <article> (title, meta, TOC, content, author, comments)');
 		}
 	}
 

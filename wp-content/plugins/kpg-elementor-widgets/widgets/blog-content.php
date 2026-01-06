@@ -198,7 +198,6 @@ class KPG_Elementor_Blog_Content_Widget extends Widget_Base {
 		
 		// Get post title
 		$post_title = get_the_title();
-		
 		?>
 		<div class="kpg-blog-content-container">
 			
@@ -288,6 +287,7 @@ class KPG_Elementor_Blog_Content_Widget extends Widget_Base {
 			</div>
 		</div>
 		<?php
+		// Don't close article here - let comments widget close it
 	}
 
 	/**

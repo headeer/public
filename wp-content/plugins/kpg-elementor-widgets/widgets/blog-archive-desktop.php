@@ -74,7 +74,7 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 				'label' => esc_html__( 'Filter by Author Automatically', 'kpg-elementor-widgets' ),
 				'type' => Controls_Manager::SWITCHER,
 				'default' => 'yes',
-				'description' => esc_html__( 'Automatically filter posts by author when on author archive pages (/author/name/)', 'kpg-elementor-widgets' ),
+				'description' => esc_html__( 'Automatically filter posts by author when on author archive pages (/autor/name/)', 'kpg-elementor-widgets' ),
 			]
 		);
 
@@ -87,16 +87,34 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 		$paged = max( 1, get_query_var( 'paged' ) );
 		$sort = isset( $_GET['sort'] ) ? sanitize_text_field( $_GET['sort'] ) : 'newest';
 		$order = ( $sort === 'oldest' ) ? 'ASC' : 'DESC';
+		
+		// Get search query parameter
+		$search_query = '';
+		if ( isset( $_GET['s'] ) && ! empty( $_GET['s'] ) ) {
+			$search_query = sanitize_text_field( $_GET['s'] );
+		} elseif ( get_query_var( 's' ) ) {
+			$search_query = get_query_var( 's' );
+		}
 
 		$args = [
 			'post_type' => 'post',
 			'posts_per_page' => intval( $settings['posts_per_page'] ),
 			'paged' => $paged,
-			'orderby' => 'date',
-			'order' => $order,
 			'post_status' => 'publish',
 			'ignore_sticky_posts' => true,
 		];
+		
+		// Add search query if present
+		if ( ! empty( $search_query ) ) {
+			$args['s'] = $search_query;
+			// When searching, sort by relevance (WordPress searches in title, content, excerpt)
+			$args['orderby'] = 'relevance';
+			$args['order'] = 'DESC'; // Relevance is always DESC
+		} else {
+			// When not searching, sort by date
+			$args['orderby'] = 'date';
+			$args['order'] = $order;
+		}
 
 		// Filter by author if on author archive page and setting is enabled
 		if ( $settings['filter_by_author'] === 'yes' ) {
@@ -131,10 +149,10 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 				}
 			}
 			
-			// Fallback: check URL directly
+			// Fallback: check URL directly (check both /autor/ and /author/ for backward compatibility)
 			if ( ! $author_id ) {
 				$request_uri = $_SERVER['REQUEST_URI'] ?? '';
-				if ( preg_match( '#/author/([^/]+)/?#', $request_uri, $matches ) ) {
+				if ( preg_match( '#/(?:autor|author)/([^/]+)/?#', $request_uri, $matches ) ) {
 					$author_slug = $matches[1];
 					$author = get_user_by( 'slug', $author_slug );
 					if ( $author ) {
@@ -165,7 +183,7 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 							<?php if ( has_post_thumbnail() ) : ?>
 								<div class="kpg-blog-desktop-image">
 									<a href="<?php the_permalink(); ?>">
-										<?php the_post_thumbnail( 'medium' ); ?>
+										<?php the_post_thumbnail( 'medium', [ 'style' => 'width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;' ] ); ?>
 									</a>
 								</div>
 							<?php else : ?>
@@ -243,9 +261,19 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 		} else {
 			$blog_base_url = rtrim( home_url( '/blog' ), '/' );
 		}
+		
+		// Preserve search query in pagination
+		$search_query = '';
+		if ( isset( $_GET['s'] ) && ! empty( $_GET['s'] ) ) {
+			$search_query = sanitize_text_field( $_GET['s'] );
+		} elseif ( get_query_var( 's' ) ) {
+			$search_query = get_query_var( 's' );
+		}
 		?>
 		<div class="kpg-blog-separator"></div>
-		<div class="kpg-blog-pagination" data-blog-base-url="<?php echo esc_attr( $blog_base_url ); ?>">
+		<div class="kpg-blog-pagination" 
+			 data-blog-base-url="<?php echo esc_attr( $blog_base_url ); ?>"
+			 data-search-query="<?php echo esc_attr( $search_query ); ?>">
 			<div class="kpg-blog-pagination-numbers">
 				<?php foreach ( $pages as $page ) : ?>
 					<?php if ( isset( $page['is_separator'] ) && $page['is_separator'] ) : ?>

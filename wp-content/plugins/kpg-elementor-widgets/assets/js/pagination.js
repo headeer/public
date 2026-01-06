@@ -63,6 +63,17 @@
 					params.set('sort', sortParam);
 				}
 				
+				// Preserve search query parameter
+				var searchQuery = '';
+				if (paginationContainer && paginationContainer.dataset.searchQuery) {
+					searchQuery = paginationContainer.dataset.searchQuery;
+				} else {
+					searchQuery = currentUrl.searchParams.get('s');
+				}
+				if (searchQuery) {
+					params.set('s', searchQuery);
+				}
+				
 				var queryString = params.toString();
 				if (queryString) {
 					paginationUrl += '?' + queryString;
@@ -127,6 +138,17 @@
 					paginationUrl += '&sort=' + encodeURIComponent(sortParam);
 				}
 				
+				// Preserve search query parameter
+				var searchQuery = '';
+				if (paginationContainer && paginationContainer.dataset.searchQuery) {
+					searchQuery = paginationContainer.dataset.searchQuery;
+				} else {
+					searchQuery = currentUrl.searchParams.get('s');
+				}
+				if (searchQuery) {
+					paginationUrl += '&s=' + encodeURIComponent(searchQuery);
+				}
+				
 				console.log('[KPG Pagination] IMMEDIATE: Navigating to next page:', paginationUrl);
 				window.location.href = paginationUrl;
 			}
@@ -174,6 +196,18 @@
 		var sortParam = url.searchParams.get('sort');
 		if (sortParam) {
 			params.set('sort', sortParam);
+		}
+		
+		// Preserve search query parameter
+		var searchQuery = '';
+		var $pagination = $('.kpg-blog-pagination');
+		if ($pagination.length > 0 && $pagination.data('search-query')) {
+			searchQuery = $pagination.data('search-query');
+		} else {
+			searchQuery = url.searchParams.get('s');
+		}
+		if (searchQuery) {
+			params.set('s', searchQuery);
 		}
 		
 		var queryString = params.toString();

@@ -61,3 +61,4 @@ function kpg_add_sort_to_pagination( $link ) {
 
 
 
+

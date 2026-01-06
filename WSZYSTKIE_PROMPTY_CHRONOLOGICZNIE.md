@@ -770,3 +770,4 @@ _Dokument chronologiczny - pokazuje ewolucję projektu i proces debugowania_
 
 
 
+

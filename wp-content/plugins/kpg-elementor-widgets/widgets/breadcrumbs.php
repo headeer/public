@@ -187,6 +187,13 @@ class KPG_Elementor_Breadcrumbs_Widget extends Widget_Base {
 			$author = get_queried_object();
 			// Better check to avoid conflicts with Rank Math SEO
 			if ( $author && is_object( $author ) && isset( $author->ID ) && isset( $author->user_login ) ) {
+				// Add "Autor" link before author name
+				$items[] = [
+					'label' => __( 'Autor', 'kpg-elementor-widgets' ),
+					'url'   => '', // No link for "Autor" - it's just a label
+					'type'  => 'author-label',
+				];
+				
 				// Get first name and last name (NOT display_name)
 				$first_name = get_the_author_meta( 'first_name', $author->ID );
 				$last_name = get_the_author_meta( 'last_name', $author->ID );
