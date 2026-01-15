@@ -76,6 +76,9 @@ final class KPG_Elementor_Widgets {
 		// Load author permalink settings
 		require_once( __DIR__ . '/includes/author-permalink-settings.php' );
 		
+		// Load blog pagination SEO (canonical, prev, next)
+		require_once( __DIR__ . '/includes/blog-pagination-seo.php' );
+		
 		// Register widget styles and scripts
 		add_action( 'elementor/frontend/after_register_styles', [ $this, 'register_styles' ] );
 		add_action( 'elementor/frontend/after_register_scripts', [ $this, 'register_scripts' ] );

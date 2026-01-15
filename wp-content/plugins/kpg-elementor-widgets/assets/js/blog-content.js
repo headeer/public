@@ -47,7 +47,7 @@
 
 		// Parse into sections
 		var sections = [];
-		var currentSection = { heading: '', content: '' };
+		var currentSection = { heading: '', headingLevel: 'h2', content: '' };
 		var intro = '';
 		var hasFirstHeading = false;
 		
@@ -60,8 +60,8 @@
 				return;
 			}
 			
-			// Check if it's a heading
-			if (tag === 'h2' || tag === 'h3') {
+			// Check if it's a heading - preserve original level (h2, h3, h4)
+			if (tag === 'h2' || tag === 'h3' || tag === 'h4') {
 				hasFirstHeading = true;
 				
 				// Save previous section if it has content
@@ -69,9 +69,10 @@
 					sections.push(currentSection);
 				}
 				
-				// Start new section
+				// Start new section - preserve original heading level
 				currentSection = {
 					heading: text,
+					headingLevel: tag, // h2, h3, or h4
 					content: ''
 				};
 			} else {
@@ -111,12 +112,15 @@
 			sections.forEach(function(section, index) {
 				var sectionId = section.heading ? 'toc-' + section.heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'section-' + (index + 1);
 				
+				// Get original heading level (h2, h3, h4) - default to h2 if not set
+				var headingLevel = section.headingLevel || 'h2';
+				
 				html += '<div class="kpg-blog-section" id="' + sectionId + '">';
 				html += '<div class="kpg-blog-section-row">';
 				html += '<span class="kpg-blog-section-number">0.' + sectionNumber + '</span>';
 				html += '<div class="kpg-blog-section-content">';
 				if (section.heading) {
-					html += '<h2 class="kpg-blog-section-heading">' + section.heading + '</h2>';
+					html += '<' + headingLevel + ' class="kpg-blog-section-heading">' + section.heading + '</' + headingLevel + '>';
 				}
 				html += '<div class="kpg-blog-section-text">' + section.content + '</div>';
 				html += '</div></div></div>';

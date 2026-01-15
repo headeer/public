@@ -112,26 +112,28 @@ class KPG_Elementor_Blog_Content_Widget extends Widget_Base {
 	 * Parse post content into sections
 	 */
 	protected function parse_content_into_sections( $content ) {
-		// Split content by headings (h2, h3) - more robust pattern
-		$pattern = '/(<h[2-3][^>]*>.*?<\/h[2-3]>)/is';
+		// Split content by headings (h2, h3, h4) - preserve original heading level
+		$pattern = '/(<h[2-4][^>]*>.*?<\/h[2-4]>)/is';
 		$parts = preg_split( $pattern, $content, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 		
 		$sections = [];
 		$current_section = [
 			'heading' => '',
+			'heading_level' => 'h2', // Default to h2
 			'content' => '',
 		];
 		
 		foreach ( $parts as $part ) {
-			// Check if this part is a heading
-			if ( preg_match( '/<h[2-3][^>]*>(.*?)<\/h[2-3]>/is', $part, $matches ) ) {
+			// Check if this part is a heading - capture the level (h2, h3, h4)
+			if ( preg_match( '/<h([2-4])[^>]*>(.*?)<\/h[2-4]>/is', $part, $matches ) ) {
 				// Save previous section if it has content
 				if ( ! empty( trim( $current_section['content'] ) ) || ! empty( $current_section['heading'] ) ) {
 					$sections[] = $current_section;
 				}
-				// Start new section
+				// Start new section - preserve original heading level
 				$current_section = [
-					'heading' => trim( strip_tags( $matches[1] ) ),
+					'heading' => trim( strip_tags( $matches[2] ) ),
+					'heading_level' => 'h' . $matches[1], // h2, h3, or h4
 					'content' => '',
 				];
 			} else {
@@ -152,6 +154,7 @@ class KPG_Elementor_Blog_Content_Widget extends Widget_Base {
 		if ( empty( $sections ) ) {
 			$sections[] = [
 				'heading' => '',
+				'heading_level' => 'h2',
 				'content' => $content,
 			];
 		}
@@ -241,13 +244,16 @@ class KPG_Elementor_Blog_Content_Widget extends Widget_Base {
 							$section_id = 'toc-' . sanitize_title( $section['heading'] );
 						}
 						
+						// Get original heading level (h2, h3, h4) - default to h2 if not set
+						$heading_level = isset( $section['heading_level'] ) ? $section['heading_level'] : 'h2';
+						
 						?>
 						<div class="kpg-blog-section" id="<?php echo esc_attr( $section_id ); ?>">
 							<div class="kpg-blog-section-row">
 								<span class="kpg-blog-section-number">0.<?php echo $section_number; ?></span>
 								<div class="kpg-blog-section-content">
 									<?php if ( ! empty( $section['heading'] ) ) : ?>
-										<h2 class="kpg-blog-section-heading"><?php echo esc_html( $section['heading'] ); ?></h2>
+										<<?php echo esc_attr( $heading_level ); ?> class="kpg-blog-section-heading"><?php echo esc_html( $section['heading'] ); ?></<?php echo esc_attr( $heading_level ); ?>>
 									<?php endif; ?>
 									<div class="kpg-blog-section-text">
 										<?php echo wp_kses_post( $section['content'] ); ?>
