@@ -79,6 +79,15 @@ final class KPG_Elementor_Widgets {
 		// Load blog pagination SEO (canonical, prev, next)
 		require_once( __DIR__ . '/includes/blog-pagination-seo.php' );
 		
+		// Load security anti-bot protection
+		require_once( __DIR__ . '/includes/security-anti-bot.php' );
+		
+		// Load Rank Math migration (Tools → Rank Math Migration)
+		require_once( __DIR__ . '/includes/rank-math-migration.php' );
+		
+		// Tymczasowa kolumna Canonical URL na liście postów (wyłącz: define('KPG_SHOW_CANONICAL_COLUMN', false) w wp-config.php)
+		require_once( __DIR__ . '/includes/admin-canonical-column.php' );
+		
 		// Register widget styles and scripts
 		add_action( 'elementor/frontend/after_register_styles', [ $this, 'register_styles' ] );
 		add_action( 'elementor/frontend/after_register_scripts', [ $this, 'register_scripts' ] );

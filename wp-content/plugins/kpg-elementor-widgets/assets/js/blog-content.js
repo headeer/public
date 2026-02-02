@@ -30,7 +30,6 @@
 			// Try to find content in the page
 			$elementorContent = $('body').find('h2, h3, p').first().closest('.elementor, .entry-content, article');
 			if ($elementorContent.length === 0) {
-				console.log('KPG Blog Content: No Elementor content found');
 				return;
 			}
 		}
@@ -41,7 +40,6 @@
 		});
 
 		if ($allElements.length === 0) {
-			console.log('KPG Blog Content: No content elements found');
 			return;
 		}
 
@@ -156,8 +154,6 @@
 		
 		if (html) {
 			$placeholder.replaceWith(html);
-		} else {
-			console.log('KPG Blog Content: No content to render');
 		}
 	}
 

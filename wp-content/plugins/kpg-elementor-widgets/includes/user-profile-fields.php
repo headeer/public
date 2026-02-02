@@ -142,11 +142,102 @@ function kpg_add_user_profile_fields( $user ) {
 				</p>
 			</td>
 		</tr>
+		<tr>
+			<th>
+				<label><?php esc_html_e( 'URL autora', 'kpg-elementor-widgets' ); ?></label>
+			</th>
+			<td>
+				<?php
+				$current_slug = $user->user_nicename;
+				$author_base = get_option( 'author_base', 'autor' );
+				$current_url = home_url( '/' . $author_base . '/' . $current_slug . '/' );
+				$generated_slug = kpg_generate_author_slug( $user->ID );
+				$generated_url = home_url( '/' . $author_base . '/' . $generated_slug . '/' );
+				?>
+				<p>
+					<strong><?php esc_html_e( 'Aktualny URL:', 'kpg-elementor-widgets' ); ?></strong><br>
+					<code><?php echo esc_url( $current_url ); ?></code>
+				</p>
+				<?php if ( $current_slug !== $generated_slug && ! empty( $generated_slug ) ) : ?>
+					<p>
+						<strong><?php esc_html_e( 'Sugerowany URL (na podstawie imienia i nazwiska):', 'kpg-elementor-widgets' ); ?></strong><br>
+						<code><?php echo esc_url( $generated_url ); ?></code>
+					</p>
+					<p class="description">
+						<?php esc_html_e( 'URL autora jest automatycznie generowany na podstawie imienia i nazwiska (bez polskich znaków) przy zapisie profilu. Jeśli chcesz zaktualizować URL, zapisz profil po zmianie imienia lub nazwiska.', 'kpg-elementor-widgets' ); ?>
+					</p>
+				<?php else : ?>
+					<p class="description">
+						<?php esc_html_e( 'URL autora jest automatycznie generowany na podstawie imienia i nazwiska (bez polskich znaków). URL zostanie zaktualizowany automatycznie przy zapisie profilu.', 'kpg-elementor-widgets' ); ?>
+					</p>
+				<?php endif; ?>
+			</td>
+		</tr>
 	</table>
 	<?php
 }
 add_action( 'show_user_profile', 'kpg_add_user_profile_fields' );
 add_action( 'edit_user_profile', 'kpg_add_user_profile_fields' );
+
+/**
+ * Convert Polish characters to ASCII equivalents
+ * 
+ * @param string $text Text with Polish characters
+ * @return string Text without Polish characters
+ */
+function kpg_remove_polish_characters( $text ) {
+	$polish_chars = [
+		'ą' => 'a', 'ć' => 'c', 'ę' => 'e', 'ł' => 'l', 'ń' => 'n',
+		'ó' => 'o', 'ś' => 's', 'ź' => 'z', 'ż' => 'z',
+		'Ą' => 'A', 'Ć' => 'C', 'Ę' => 'E', 'Ł' => 'L', 'Ń' => 'N',
+		'Ó' => 'O', 'Ś' => 'S', 'Ź' => 'Z', 'Ż' => 'Z',
+	];
+	
+	return strtr( $text, $polish_chars );
+}
+
+/**
+ * Generate author slug from first name and last name
+ * 
+ * @param int $user_id User ID
+ * @return string Author slug (e.g., "mateusz-peczkowski")
+ */
+function kpg_generate_author_slug( $user_id ) {
+	$user = get_userdata( $user_id );
+	if ( ! $user ) {
+		return '';
+	}
+	
+	// Get first_name and last_name from user object (stored in users table, not meta)
+	$first_name = $user->first_name;
+	$last_name = $user->last_name;
+	
+	// Combine first and last name
+	$full_name = trim( $first_name . ' ' . $last_name );
+	
+	// If still empty, fallback to display_name
+	if ( empty( $full_name ) ) {
+		$full_name = $user->display_name;
+	}
+	
+	// If still empty, fallback to user_nicename (don't change it)
+	if ( empty( $full_name ) ) {
+		return $user->user_nicename;
+	}
+	
+	// Remove Polish characters
+	$full_name = kpg_remove_polish_characters( $full_name );
+	
+	// Convert to slug
+	$slug = sanitize_title( $full_name );
+	
+	// If slug is still empty, use current user_nicename as fallback
+	if ( empty( $slug ) ) {
+		$slug = $user->user_nicename;
+	}
+	
+	return $slug;
+}
 
 /**
  * Save custom user profile fields
@@ -155,6 +246,28 @@ function kpg_save_user_profile_fields( $user_id ) {
 	// Check if current user can edit this user
 	if ( ! current_user_can( 'edit_user', $user_id ) ) {
 		return false;
+	}
+
+	// Auto-update user_nicename based on first_name + last_name (without Polish characters)
+	// Check if first_name or last_name was submitted in the form
+	if ( isset( $_POST['first_name'] ) || isset( $_POST['last_name'] ) ) {
+		$new_slug = kpg_generate_author_slug( $user_id );
+		
+		// Only update if slug changed and is not empty
+		$current_user = get_userdata( $user_id );
+		if ( $current_user && $new_slug && $new_slug !== $current_user->user_nicename ) {
+			// Check if slug is already taken by another user
+			$existing_user = get_user_by( 'slug', $new_slug );
+			if ( ! $existing_user || $existing_user->ID === $user_id ) {
+				wp_update_user( [
+					'ID' => $user_id,
+					'user_nicename' => $new_slug,
+				] );
+				
+				// Flush rewrite rules to ensure new URL works
+				flush_rewrite_rules( false );
+			}
+		}
 	}
 
 	// Save author avatar image

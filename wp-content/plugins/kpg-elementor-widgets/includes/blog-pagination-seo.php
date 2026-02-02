@@ -12,11 +12,75 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Ensure canonical URL is always generated for single posts
+ * Uses Rank Math filter if available, otherwise adds directly
+ */
+function kpg_ensure_single_post_canonical( $canonical ) {
+	// Only for single posts
+	if ( ! is_single() && ! is_singular( 'post' ) ) {
+		return $canonical;
+	}
+	
+	global $post;
+	if ( ! $post ) {
+		return $canonical;
+	}
+	
+	// If Rank Math already provided canonical, use it
+	if ( ! empty( $canonical ) ) {
+		return $canonical;
+	}
+	
+	// Get canonical URL from Rank Math meta if exists
+	$canonical_url = get_post_meta( $post->ID, 'rank_math_canonical_url', true );
+	
+	// If no custom canonical in Rank Math, use post permalink
+	if ( empty( $canonical_url ) ) {
+		$canonical_url = get_permalink( $post->ID );
+	}
+	
+	return $canonical_url;
+}
+
+/**
+ * Add canonical URL for single posts (fallback if Rank Math doesn't generate it)
+ */
+function kpg_add_single_post_canonical() {
+	// Only for single posts
+	if ( ! is_single() && ! is_singular( 'post' ) ) {
+		return;
+	}
+	
+	global $post;
+	if ( ! $post ) {
+		return;
+	}
+	
+	// Check if Rank Math is active
+	$rank_math_active = class_exists( 'RankMath' ) || defined( 'RANK_MATH_VERSION' );
+	
+	// If Rank Math is active, it should generate canonical via filter
+	// But we'll add ours as fallback with higher priority
+	// Get canonical URL from Rank Math meta if exists
+	$canonical_url = get_post_meta( $post->ID, 'rank_math_canonical_url', true );
+	
+	// If no custom canonical in Rank Math, use post permalink
+	if ( empty( $canonical_url ) ) {
+		$canonical_url = get_permalink( $post->ID );
+	}
+	
+	// Output canonical
+	// Use priority 0 to ensure it's added before Rank Math (which uses priority 10)
+	// But Rank Math should still work and might override if it generates one
+	echo '<link rel="canonical" href="' . esc_url( $canonical_url ) . '" />' . "\n";
+}
+
+/**
  * Add canonical, prev, and next links for blog pagination
  */
 function kpg_add_blog_pagination_seo() {
-	// EXCLUDE single posts - our code should only run on archive pages
-	// Rank Math SEO handles canonical for single posts
+	// EXCLUDE single posts - handled by separate function
+	// Rank Math SEO handles canonical for single posts, but we have a fallback
 	if ( is_single() || is_singular( 'post' ) ) {
 		return;
 	}
@@ -260,6 +324,14 @@ function kpg_get_current_blog_url() {
 	return home_url( add_query_arg( null, null ) );
 }
 
+// Hook into Rank Math filter to ensure canonical is always set
+if ( class_exists( 'RankMath' ) || defined( 'RANK_MATH_VERSION' ) ) {
+	add_filter( 'rank_math/frontend/canonical', 'kpg_ensure_single_post_canonical', 5 );
+}
+
 // Hook into wp_head
+// Priority 1 for pagination SEO (before Rank Math's priority 10)
 add_action( 'wp_head', 'kpg_add_blog_pagination_seo', 1 );
+// Priority 0 for single post canonical (before Rank Math's priority 10, but Rank Math will override if it generates one)
+add_action( 'wp_head', 'kpg_add_single_post_canonical', 0 );
 

@@ -200,17 +200,12 @@ class KPG_Elementor_TOC_Widget extends Widget_Base {
 		jQuery(document).ready(function($) {
 			var headings = <?php echo json_encode( $headings ); ?>;
 			
-			console.log('KPG TOC: Initializing, headings:', headings);
-			
 			// Try multiple selectors for content area
 			var $contentAreas = $('.entry-content, .kpg-blog-content, .post-content, article, main, .elementor-widget-theme-post-content');
-			
-			console.log('KPG TOC: Found content areas:', $contentAreas.length);
 			
 			if ($contentAreas.length === 0) {
 				// Fallback: search entire body
 				$contentAreas = $('body');
-				console.log('KPG TOC: Using body as fallback');
 			}
 			
 			// Add IDs to headings
@@ -221,8 +216,6 @@ class KPG_Elementor_TOC_Widget extends Widget_Base {
 					// Find all headings of this level
 					var $allHeadings = $content.find(h.level);
 					
-					console.log('KPG TOC: Looking for', h.level, 'found:', $allHeadings.length);
-					
 					$allHeadings.each(function() {
 						var $heading = $(this);
 						var headingText = $heading.text().trim();
@@ -231,20 +224,11 @@ class KPG_Elementor_TOC_Widget extends Widget_Base {
 						if (headingText === h.text || headingText.indexOf(h.text) !== -1) {
 							if (!$heading.attr('id')) {
 								$heading.attr('id', h.id);
-								console.log('KPG TOC: ✓ Added ID', h.id, 'to:', h.text.substring(0, 50));
 							}
 						}
 					});
 				});
 			});
-			
-			// Log all headings with IDs for debugging
-			setTimeout(function() {
-				var allIds = $('h2[id], h3[id], h4[id]').map(function() {
-					return this.id + ': ' + $(this).text().substring(0, 30);
-				}).get();
-				console.log('KPG TOC: All headings with IDs:', allIds);
-			}, 100);
 		});
 		</script>
 		<?php
