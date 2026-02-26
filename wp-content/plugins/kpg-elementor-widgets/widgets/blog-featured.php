@@ -190,9 +190,9 @@ class KPG_Elementor_Blog_Featured_Widget extends Widget_Base {
 			<div class="kpg-blog-featured-content">
 				<div class="kpg-blog-featured-text-section">
 					<div class="kpg-blog-featured-text-wrapper">
-						<h2 class="kpg-blog-featured-title">
+						<h3 class="kpg-blog-featured-title">
 							<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
-						</h2>
+						</h3>
 						<div class="kpg-blog-featured-excerpt-wrapper">
 							<div class="kpg-blog-featured-excerpt-border">
 								<p class="kpg-blog-featured-excerpt"><?php echo esc_html( $excerpt ); ?></p>
@@ -227,9 +227,9 @@ class KPG_Elementor_Blog_Featured_Widget extends Widget_Base {
 					<div class="kpg-blog-featured-mobile-image" style="background-image: url('<?php echo esc_url( $image_url ); ?>');"></div>
 				</a>
 			<?php endif; ?>
-			<h2 class="kpg-blog-featured-mobile-title">
+			<h3 class="kpg-blog-featured-mobile-title">
 				<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
-			</h2>
+			</h3>
 			<div class="kpg-blog-featured-mobile-excerpt-wrapper">
 				<p class="kpg-blog-featured-mobile-excerpt"><?php echo esc_html( $excerpt ); ?></p>
 			</div>
@@ -260,7 +260,7 @@ class KPG_Elementor_Blog_Featured_Widget extends Widget_Base {
 			<div class="kpg-blog-featured-content">
 				<div class="kpg-blog-featured-text-section">
 					<div class="kpg-blog-featured-text-wrapper">
-						<h2 class="kpg-blog-featured-title">Sample Blog Post Title</h2>
+						<h3 class="kpg-blog-featured-title">Sample Blog Post Title</h3>
 						<div class="kpg-blog-featured-excerpt-wrapper">
 							<div class="kpg-blog-featured-excerpt-border">
 								<p class="kpg-blog-featured-excerpt">Sample excerpt text that describes the blog post content...</p>
@@ -282,7 +282,7 @@ class KPG_Elementor_Blog_Featured_Widget extends Widget_Base {
 				<span class="kpg-blog-featured-mobile-label">{{{ settings.blog_label }}}</span>
 			</div>
 			<div class="kpg-blog-featured-mobile-image"></div>
-			<h2 class="kpg-blog-featured-mobile-title">Sample Blog Post Title</h2>
+			<h3 class="kpg-blog-featured-mobile-title">Sample Blog Post Title</h3>
 			<div class="kpg-blog-featured-mobile-excerpt-wrapper">
 				<p class="kpg-blog-featured-mobile-excerpt">Sample excerpt text that describes the blog post content...</p>
 			</div>
@@ -295,4 +295,3 @@ class KPG_Elementor_Blog_Featured_Widget extends Widget_Base {
 		<?php
 	}
 }
-

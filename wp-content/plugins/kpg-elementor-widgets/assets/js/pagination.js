@@ -9,6 +9,14 @@
 	'use strict';
 	
 	console.log('[KPG Pagination] Script loaded, setting up immediate handler');
+
+	function getContextBaseUrl(currentUrl) {
+		var pathname = currentUrl.pathname.replace(/\/page\/\d+\/?$/, '');
+		if (!pathname) {
+			pathname = '/';
+		}
+		return currentUrl.origin + pathname;
+	}
 	
 	// Handler który działa NATYCHMIAST, przed jQuery ready
 	document.addEventListener('click', function(e) {
@@ -40,11 +48,7 @@
 					blogBaseUrl = paginationContainer.dataset.blogBaseUrl;
 				} else {
 					var url = new URL(window.location.href);
-					var pathname = url.pathname.replace(/\/page\/\d+\/?$/, '');
-					if (!pathname.match(/\/blog/)) {
-						pathname = '/blog';
-					}
-					blogBaseUrl = url.origin + pathname;
+					blogBaseUrl = getContextBaseUrl(url);
 				}
 				
 				blogBaseUrl = blogBaseUrl.replace(/\/$/, '');
@@ -120,11 +124,7 @@
 					blogBaseUrl = paginationContainer.dataset.blogBaseUrl;
 				} else {
 					var url = new URL(window.location.href);
-					var pathname = url.pathname.replace(/\/page\/\d+\/?$/, '');
-					if (!pathname.match(/\/blog/)) {
-						pathname = '/blog';
-					}
-					blogBaseUrl = url.origin + pathname;
+					blogBaseUrl = getContextBaseUrl(url);
 				}
 				
 				blogBaseUrl = blogBaseUrl.replace(/\/$/, '');
@@ -176,11 +176,7 @@
 		if ($pagination.length > 0 && $pagination.data('blog-base-url')) {
 			blogBaseUrl = $pagination.data('blog-base-url');
 		} else {
-			var pathname = url.pathname.replace(/\/page\/\d+\/?$/, '');
-			if (!pathname.match(/\/blog/)) {
-				pathname = '/blog';
-			}
-			blogBaseUrl = url.origin + pathname;
+			blogBaseUrl = getContextBaseUrl(url);
 		}
 		
 		blogBaseUrl = blogBaseUrl.replace(/\/$/, '');

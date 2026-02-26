@@ -36,6 +36,11 @@ function kpg_rankmath_migration_page() {
 		wp_die( 'You do not have sufficient permissions to access this page.' );
 	}
 
+	$active_tab = isset( $_GET['kpg_tab'] ) ? sanitize_key( wp_unslash( $_GET['kpg_tab'] ) ) : 'migration';
+	if ( ! in_array( $active_tab, [ 'migration', 'canonical-audit' ], true ) ) {
+		$active_tab = 'migration';
+	}
+
 	// Handle cleanup request
 	if ( isset( $_POST['kpg_replace_canonical_urls'] ) && check_admin_referer( 'kpg_replace_canonical_urls_action' ) ) {
 		$old_url = esc_url_raw( $_POST['old_canonical_url'] ?? '' );
@@ -162,6 +167,34 @@ function kpg_rankmath_migration_page() {
 	<div class="wrap">
 		<h1>Rank Math SEO Migration</h1>
 		<p>Migrate Rank Math SEO meta tags from old WordPress site to this site.</p>
+		<?php
+		$migration_tab_url = add_query_arg(
+			[
+				'page' => 'kpg-rank-math-migration',
+				'kpg_tab' => 'migration',
+			],
+			admin_url( 'tools.php' )
+		);
+		$audit_tab_url = add_query_arg(
+			[
+				'page' => 'kpg-rank-math-migration',
+				'kpg_tab' => 'canonical-audit',
+			],
+			admin_url( 'tools.php' )
+		);
+		?>
+		<h2 class="nav-tab-wrapper">
+			<a href="<?php echo esc_url( $migration_tab_url ); ?>" class="nav-tab <?php echo ( 'migration' === $active_tab ) ? 'nav-tab-active' : ''; ?>">Migracja</a>
+			<a href="<?php echo esc_url( $audit_tab_url ); ?>" class="nav-tab <?php echo ( 'canonical-audit' === $active_tab ) ? 'nav-tab-active' : ''; ?>">Audyt Canonical</a>
+		</h2>
+		
+		<?php if ( 'canonical-audit' === $active_tab ) : ?>
+			<?php kpg_render_rankmath_canonical_audit_tab(); ?>
+		</div>
+		<?php
+		return;
+		endif;
+		?>
 		
 		<?php if ( ! $rankmath_active ) : ?>
 			<div class="notice notice-warning">
@@ -363,6 +396,328 @@ function kpg_rankmath_migration_page() {
 		<pre>wp kpg-import-rankmath-csv /path/to/file.csv --old-site-url=https://old-site.com</pre>
 	</div>
 	<?php
+}
+
+/**
+ * Render canonical audit tab content.
+ */
+function kpg_render_rankmath_canonical_audit_tab() {
+	$default_old_domain = 'https://kpgio.pl';
+	$default_new_domain = home_url( '/' );
+
+	$old_domain = isset( $_POST['kpg_audit_old_domain'] ) ? esc_url_raw( wp_unslash( $_POST['kpg_audit_old_domain'] ) ) : $default_old_domain;
+	$new_domain = isset( $_POST['kpg_audit_new_domain'] ) ? esc_url_raw( wp_unslash( $_POST['kpg_audit_new_domain'] ) ) : $default_new_domain;
+	$only_issues = isset( $_POST['kpg_audit_only_issues'] ) && '1' === $_POST['kpg_audit_only_issues'];
+
+	$audit_results = null;
+	$fix_result = null;
+
+	if ( isset( $_POST['kpg_fix_canonical_issues'] ) ) {
+		check_admin_referer( 'kpg_fix_canonical_issues_action' );
+		$fix_mode = isset( $_POST['kpg_fix_mode'] ) ? sanitize_key( wp_unslash( $_POST['kpg_fix_mode'] ) ) : 'all';
+		if ( ! in_array( $fix_mode, [ 'all', 'missing' ], true ) ) {
+			$fix_mode = 'all';
+		}
+		$fix_result = kpg_fix_rankmath_canonical_issues( $old_domain, $new_domain, $fix_mode );
+		$audit_results = kpg_run_rankmath_canonical_audit( $old_domain, $new_domain, $only_issues );
+	}
+
+	if ( isset( $_POST['kpg_run_canonical_audit'] ) ) {
+		check_admin_referer( 'kpg_canonical_audit_action' );
+		$audit_results = kpg_run_rankmath_canonical_audit( $old_domain, $new_domain, $only_issues );
+	}
+	?>
+	<h2>Audyt Canonical dla bloga</h2>
+	<p>Sprawdza wszystkie posty blogowe i wykrywa brak canonical, starą domenę oraz niezgodność z permalinkiem.</p>
+
+	<form method="post" action="">
+		<?php wp_nonce_field( 'kpg_canonical_audit_action' ); ?>
+		<table class="form-table">
+			<tr>
+				<th scope="row"><label for="kpg_audit_old_domain">Stara domena</label></th>
+				<td>
+					<input type="url" id="kpg_audit_old_domain" name="kpg_audit_old_domain" value="<?php echo esc_attr( $old_domain ); ?>" class="regular-text" placeholder="https://kpgio.pl">
+					<p class="description">Canonical z tym hostem będą oznaczone jako „stara domena”.</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="kpg_audit_new_domain">Nowa domena</label></th>
+				<td>
+					<input type="url" id="kpg_audit_new_domain" name="kpg_audit_new_domain" value="<?php echo esc_attr( $new_domain ); ?>" class="regular-text" placeholder="https://www.kontroladotacjioswiatowych.pl/">
+					<p class="description">Canonical z innym hostem niż ten będą oznaczone jako „inna domena”.</p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">Filtr</th>
+				<td>
+					<label>
+						<input type="checkbox" name="kpg_audit_only_issues" value="1" <?php checked( $only_issues ); ?>>
+						Pokaż tylko rekordy z problemami
+					</label>
+				</td>
+			</tr>
+		</table>
+		<p class="submit">
+			<input type="submit" name="kpg_run_canonical_audit" class="button button-primary" value="Uruchom audyt canonical">
+		</p>
+	</form>
+
+	<?php if ( is_array( $fix_result ) ) : ?>
+		<div class="notice notice-<?php echo $fix_result['success'] ? 'success' : 'error'; ?> inline">
+			<p><?php echo esc_html( $fix_result['message'] ); ?></p>
+		</div>
+	<?php endif; ?>
+
+	<?php if ( is_array( $audit_results ) ) : ?>
+		<?php $summary = $audit_results['summary']; ?>
+		<h3>Podsumowanie</h3>
+		<ul>
+			<li><strong>Przeskanowane posty:</strong> <?php echo esc_html( (string) $summary['total'] ); ?></li>
+			<li><strong>OK:</strong> <?php echo esc_html( (string) $summary['ok'] ); ?></li>
+			<li><strong>Brak canonical:</strong> <?php echo esc_html( (string) $summary['missing'] ); ?></li>
+			<li><strong>Stara domena:</strong> <?php echo esc_html( (string) $summary['old_domain'] ); ?></li>
+			<li><strong>Inna domena:</strong> <?php echo esc_html( (string) $summary['other_domain'] ); ?></li>
+			<li><strong>Niezgodny z permalinkiem:</strong> <?php echo esc_html( (string) $summary['mismatch_permalink'] ); ?></li>
+			<li><strong>Nieprawidłowy canonical:</strong> <?php echo esc_html( (string) $summary['invalid'] ); ?></li>
+		</ul>
+
+		<form method="post" action="" onsubmit="return confirm('Naprawić canonical dla wykrytych problemów?');" style="margin: 16px 0 24px;">
+			<?php wp_nonce_field( 'kpg_fix_canonical_issues_action' ); ?>
+			<input type="hidden" name="kpg_audit_old_domain" value="<?php echo esc_attr( $old_domain ); ?>">
+			<input type="hidden" name="kpg_audit_new_domain" value="<?php echo esc_attr( $new_domain ); ?>">
+			<input type="hidden" name="kpg_audit_only_issues" value="<?php echo $only_issues ? '1' : '0'; ?>">
+			<label for="kpg_fix_mode"><strong>Tryb naprawy:</strong></label>
+			<select name="kpg_fix_mode" id="kpg_fix_mode">
+				<option value="all">Napraw wszystkie problemy (canonical = permalink)</option>
+				<option value="missing">Uzupełnij tylko brakujące canonical</option>
+			</select>
+			<input type="submit" name="kpg_fix_canonical_issues" class="button button-secondary" value="Napraw canonical">
+		</form>
+
+		<h3>Wyniki szczegółowe</h3>
+		<table class="widefat striped">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Tytuł</th>
+					<th>Status</th>
+					<th>Permalink</th>
+					<th>Canonical</th>
+					<th>Akcje</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if ( empty( $audit_results['rows'] ) ) : ?>
+					<tr>
+						<td colspan="6">Brak rekordów do wyświetlenia.</td>
+					</tr>
+				<?php else : ?>
+					<?php foreach ( $audit_results['rows'] as $row ) : ?>
+						<tr>
+							<td><?php echo esc_html( (string) $row['id'] ); ?></td>
+							<td><?php echo esc_html( $row['title'] ); ?></td>
+							<td><strong><?php echo esc_html( $row['status_label'] ); ?></strong></td>
+							<td><code><?php echo esc_html( $row['permalink'] ); ?></code></td>
+							<td><code><?php echo esc_html( $row['canonical'] ); ?></code></td>
+							<td>
+								<?php if ( ! empty( $row['view_url'] ) ) : ?>
+									<a href="<?php echo esc_url( $row['view_url'] ); ?>" target="_blank" rel="noopener noreferrer">Podgląd</a>
+								<?php endif; ?>
+								<?php if ( ! empty( $row['edit_url'] ) ) : ?>
+									<?php if ( ! empty( $row['view_url'] ) ) : ?> | <?php endif; ?>
+									<a href="<?php echo esc_url( $row['edit_url'] ); ?>">Edytuj</a>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				<?php endif; ?>
+			</tbody>
+		</table>
+	<?php endif; ?>
+	<?php
+}
+
+/**
+ * Normalize host for domain comparison (ignores www).
+ *
+ * @param string $url URL to parse.
+ * @return string
+ */
+function kpg_normalize_host_for_compare( $url ) {
+	$host = parse_url( (string) $url, PHP_URL_HOST );
+	if ( ! is_string( $host ) || '' === $host ) {
+		return '';
+	}
+	$host = strtolower( $host );
+	return preg_replace( '/^www\./', '', $host );
+}
+
+/**
+ * Normalize URL for equality checks.
+ *
+ * @param string $url URL to normalize.
+ * @return string
+ */
+function kpg_normalize_url_for_compare( $url ) {
+	$normalized = trim( (string) $url );
+	if ( '' === $normalized ) {
+		return '';
+	}
+	return untrailingslashit( $normalized );
+}
+
+/**
+ * Scan all blog posts and check Rank Math canonical correctness.
+ *
+ * @param string $old_domain_url Old domain URL.
+ * @param string $new_domain_url New domain URL.
+ * @param bool   $only_issues    Return only problematic rows.
+ * @return array
+ */
+function kpg_run_rankmath_canonical_audit( $old_domain_url, $new_domain_url, $only_issues = false ) {
+	global $wpdb;
+
+	$old_host = kpg_normalize_host_for_compare( $old_domain_url );
+	$new_host = kpg_normalize_host_for_compare( $new_domain_url );
+
+	$summary = [
+		'total' => 0,
+		'ok' => 0,
+		'missing' => 0,
+		'old_domain' => 0,
+		'other_domain' => 0,
+		'mismatch_permalink' => 0,
+		'invalid' => 0,
+	];
+
+	$rows = [];
+	$post_rows = $wpdb->get_results(
+		"SELECT p.ID, p.post_title, p.post_status, pm.meta_value AS canonical_url
+		 FROM {$wpdb->posts} p
+		 LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'rank_math_canonical_url'
+		 WHERE p.post_type = 'post'
+		 AND p.post_status NOT IN ('trash', 'auto-draft', 'inherit')
+		 ORDER BY p.post_date DESC"
+	);
+
+	if ( empty( $post_rows ) ) {
+		return [
+			'summary' => $summary,
+			'rows' => [],
+		];
+	}
+
+	foreach ( $post_rows as $post_row ) {
+		$post_id = (int) $post_row->ID;
+		$permalink = (string) get_permalink( $post_id );
+		$canonical = is_string( $post_row->canonical_url ) ? trim( $post_row->canonical_url ) : '';
+		$canonical_host = kpg_normalize_host_for_compare( $canonical );
+
+		$status_key = 'ok';
+		$status_label = 'OK';
+
+		if ( '' === $canonical ) {
+			$status_key = 'missing';
+			$status_label = 'Brak canonical';
+		} elseif ( '' === $canonical_host ) {
+			$status_key = 'invalid';
+			$status_label = 'Nieprawidłowy canonical';
+		} elseif ( '' !== $old_host && $canonical_host === $old_host ) {
+			$status_key = 'old_domain';
+			$status_label = 'Stara domena';
+		} elseif ( '' !== $new_host && $canonical_host !== $new_host ) {
+			$status_key = 'other_domain';
+			$status_label = 'Inna domena';
+		} elseif ( '' !== $permalink && kpg_normalize_url_for_compare( $canonical ) !== kpg_normalize_url_for_compare( $permalink ) ) {
+			$status_key = 'mismatch_permalink';
+			$status_label = 'Niezgodny z permalinkiem';
+		}
+
+		$summary['total']++;
+		$summary[ $status_key ]++;
+
+		$is_issue = ( 'ok' !== $status_key );
+		if ( $only_issues && ! $is_issue ) {
+			continue;
+		}
+
+		$rows[] = [
+			'id' => $post_id,
+			'title' => (string) $post_row->post_title,
+			'status_key' => $status_key,
+			'status_label' => $status_label,
+			'permalink' => $permalink,
+			'canonical' => $canonical,
+			'view_url' => $permalink,
+			'edit_url' => get_edit_post_link( $post_id, '' ),
+		];
+	}
+
+	return [
+		'summary' => $summary,
+		'rows' => $rows,
+	];
+}
+
+/**
+ * Fix canonical issues by setting canonical equal to permalink.
+ *
+ * @param string $old_domain_url Old domain URL used by audit.
+ * @param string $new_domain_url New domain URL used by audit.
+ * @param string $fix_mode       all|missing
+ * @return array
+ */
+function kpg_fix_rankmath_canonical_issues( $old_domain_url, $new_domain_url, $fix_mode = 'all' ) {
+	$fix_mode = in_array( $fix_mode, [ 'all', 'missing' ], true ) ? $fix_mode : 'all';
+	$audit = kpg_run_rankmath_canonical_audit( $old_domain_url, $new_domain_url, false );
+
+	$updated = 0;
+	$skipped = 0;
+
+	if ( empty( $audit['rows'] ) || ! is_array( $audit['rows'] ) ) {
+		return [
+			'success' => true,
+			'message' => 'Brak postów do naprawy.',
+		];
+	}
+
+	foreach ( $audit['rows'] as $row ) {
+		$status_key = isset( $row['status_key'] ) ? (string) $row['status_key'] : '';
+		if ( 'ok' === $status_key ) {
+			$skipped++;
+			continue;
+		}
+		if ( 'missing' === $fix_mode && 'missing' !== $status_key ) {
+			$skipped++;
+			continue;
+		}
+
+		$post_id = isset( $row['id'] ) ? (int) $row['id'] : 0;
+		$permalink = isset( $row['permalink'] ) ? (string) $row['permalink'] : '';
+		if ( $post_id <= 0 || '' === $permalink ) {
+			$skipped++;
+			continue;
+		}
+
+		update_post_meta( $post_id, 'rank_math_canonical_url', $permalink );
+		$updated++;
+	}
+
+	if ( 0 === $updated ) {
+		return [
+			'success' => true,
+			'message' => 'Nie znaleziono wpisów wymagających naprawy w wybranym trybie.',
+		];
+	}
+
+	return [
+		'success' => true,
+		'message' => sprintf(
+			'Naprawiono canonical dla %d wpisów. Pominięto %d.',
+			$updated,
+			$skipped
+		),
+	];
 }
 
 /**

@@ -1,112 +1,102 @@
-/**
- * KPG Post Meta Bar - dokładnie z Figmy
- * 
- * Desktop: width 1382px, complex layout
- * Mobile: width 343px, simple layout
- * 
- * Mobile base: 375px
- * Desktop base: 1696px
- */
-
 @import '_kpg-colors.css';
-
-/* ============================================
-   MOBILE (width: 343px z Figmy)
-   ============================================ */
 
 .kpg-post-meta-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%; /* 343px / 375px */
+  gap: 12px;
+  width: 100%;
   margin: 0 auto;
-  padding: 4.2667vw 0; /* 16px 0 */
-  border-bottom: 0.2667vw solid #e3ebec; /* 1px */
+  padding: 16px 0;
+  border-bottom: 1px solid #e3ebec;
 }
 
-/* Left: Avatar + Author•Date (1 line) */
 .kpg-post-meta-author-section {
   display: flex;
   align-items: center;
-  gap: 3.2vw; /* 12px / 375px */
-  width: 84.5333vw; /* 317px / 375px */
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .kpg-post-meta-avatar {
-  flex-shrink: 0;
-  width: 8.5333vw; /* 32px / 375px */
-  height: 8.5333vw;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .kpg-post-meta-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-/* Author info - MOBILE: tylko author•date w 1 linii */
 .kpg-post-meta-author-info {
-  display: flex;
-  flex-direction: row; /* mobile: horizontal */
-  gap: 0;
-  min-width: 0; /* Allow flex child to shrink */
-  overflow: hidden; /* Prevent overflow */
+  min-width: 0;
 }
 
 .kpg-post-meta-author-label {
-  display: none; /* ukryte na mobile */
+  display: none;
 }
 
 .kpg-post-meta-author-name {
+  display: block;
   font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 3.2vw; /* 12px / 375px */
+  font-size: 12px;
   font-weight: 300;
-  line-height: 3.84vw; /* 14.4px / 375px - minimum 1.2x font-size */
+  line-height: 1.2;
   color: #6f7b7c;
   text-transform: uppercase;
+  letter-spacing: 0.6px;
   white-space: nowrap;
-  letter-spacing: 0.16vw; /* 0.6px / 375px */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  min-width: 0; /* Allow flex child to shrink */
+  overflow: visible;
+  text-overflow: clip;
 }
 
-/* Date section - ukryte na mobile (część author-name) */
+.kpg-post-meta-right-section {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 .kpg-post-meta-date-section {
   display: none;
 }
 
-/* Right: Share icon (tylko ikona) */
 .kpg-post-meta-share-section {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .kpg-post-meta-share-icon {
-  width: 5.2667vw; /* 16px / 375px */
-  height: 3.667vw;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .kpg-post-meta-share-icon svg {
   width: 100%;
   height: 100%;
+  display: block;
 }
 
 .kpg-post-meta-share-text {
-  display: none; /* ukryte na mobile */
+  display: none;
 }
 
 .kpg-post-meta-share-buttons {
   display: none;
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   right: 0;
-  margin-top: 8px;
   background: #fff;
   border: 1px solid #e3ebec;
   border-radius: 8px;
@@ -115,41 +105,36 @@
   z-index: 1000;
   flex-direction: column;
   gap: 8px;
-  min-width: 160px; /* Większa szerokość dla pełnych nazw */
+  min-width: 160px;
 }
 
 .kpg-post-meta-share-buttons.show {
   display: flex;
 }
 
-.kpg-post-meta-share-section {
-  position: relative;
-}
-
 .kpg-share-btn {
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
   padding: 8px 12px;
   background: #f7f9f9;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  color: #404848;
   font-family: var(--kpg-font-mono);
   font-size: 12px;
-  color: #404848;
-  text-align: left;
   transition: all 0.2s ease;
-  width: 100%;
-  text-decoration: none;
 }
 
 .kpg-share-btn-icon {
-  flex-shrink: 0;
   width: 18px;
   height: 18px;
+  flex-shrink: 0;
   color: inherit;
-  transition: color 0.2s ease;
 }
 
 .kpg-share-btn-text {
@@ -157,134 +142,10 @@
 }
 
 .kpg-share-btn:hover {
-  background: transparent!important;
-  text-decoration: underline!important;
-  color: #404848!important;
+  background: transparent !important;
+  text-decoration: underline !important;
+  color: #404848 !important;
 }
-
-.kpg-share-btn:hover .kpg-share-btn-icon {
-  color: inherit;
-}
-
-/* ============================================
-   DESKTOP (width: 1382px z Figmy)
-   ============================================ */
-
-@media screen and (min-width: 1025px) {
-  .kpg-post-meta-bar {
-    width: 81.4858vw; /* 1382px / 1696px */
-    padding: 1.8868vw 0; /* 32px 0 */
-    border-bottom: 0.0590vw solid #e3ebec; /* 1px */
-  }
-
-  /* Left: Avatar + Author (vertical) */
-  .kpg-post-meta-author-section {
-    gap: 0.9434vw; /* 16px / 1696px */
-    width: 14.8585vw; /* 251px / 1696px */
-  }
-
-  .kpg-post-meta-avatar {
-    width: 2.8302vw; /* 48px / 1696px */
-    height: 2.8302vw;
-  }
-
-  .kpg-post-meta-author-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4717vw; /* 8px / 1696px */
-    width: 11.0260vw; /* 187px / 1696px */
-    min-width: 0; /* Allow flex child to shrink */
-    overflow: hidden; /* Prevent overflow */
-  }
-
-  .kpg-post-meta-author-label {
-    display: block; /* pokazane na desktop */
-    font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 0.9434vw; /* 16px / 1696px */
-    font-weight: 300;
-    line-height: 0.6484vw; /* 11px / 1696px */
-    color: #899596;
-    letter-spacing: -0.0189vw; /* -0.32px / 1696px */
-  }
-
-  .kpg-post-meta-author-name {
-    font-size: 0.9434vw; /* 16px / 1696px */
-    line-height: 1.1321vw; /* 19.2px / 1696px - minimum 1.2x font-size */
-    color: #404848; /* czarny na desktop */
-    text-transform: uppercase;
-    letter-spacing: 0.0472vw; /* 0.8px / 1696px */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 100%;
-    min-width: 0; /* Allow flex child to shrink */
-  }
-
-  /* Center: Date section (shows on desktop) */
-  .kpg-post-meta-date-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4717vw; /* 8px */
-    width: 39.7406vw; /* 674px / 1696px */
-  }
-
-  .kpg-post-meta-date-label {
-    font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 0.9434vw; /* 16px */
-    font-weight: 300;
-    line-height: 0.6484vw; /* 11px */
-    color: #899596;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  /* DAARTYKUŁ razem pisane (da + Artykuł...) */
-  .kpg-post-meta-da {
-    letter-spacing: 0; /* bez spacji */
-  }
-
-  .kpg-post-meta-date-text {
-    letter-spacing: 0; /* bez spacji */
-  }
-
-  .kpg-post-meta-date-value {
-    font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 0.9434vw; /* 16px */
-    font-weight: 300;
-    line-height: 0.6484vw; /* 11px */
-    color: #404848;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  /* Right: Share button */
-  .kpg-post-meta-share-section {
-    display: flex;
-    align-items: center;
-    gap: 0.9434vw; /* 16px / 1696px */
-    width: 7.5472vw; /* 128px / 1696px */
-  }
-
-  .kpg-post-meta-share-icon {
-    width: 0.9434vw; /* 16px / 1696px */
-    height: 0.9434vw;
-  }
-
-  .kpg-post-meta-share-text {
-    display: block; /* pokazane na desktop */
-    font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 0.9434vw; /* 16px */
-    font-weight: 300;
-    line-height: 0.6484vw; /* 11px */
-    color: #404848;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-}
-
-/* ============================================
-   RESET WP STYLES
-   ============================================ */
 
 .kpg-post-meta-bar button {
   background: transparent !important;
@@ -296,4 +157,122 @@
 
 .kpg-post-meta-bar a {
   text-decoration: none !important;
+}
+
+@media screen and (min-width: 1025px) {
+  .kpg-post-meta-bar {
+    width: 81.4858vw;
+    gap: 0;
+    padding: 1.8868vw 0;
+  }
+
+  .kpg-post-meta-author-section {
+    width: max-content;
+    min-width: 14.7995vw;
+    flex: 0 0 auto;
+    gap: 0.9434vw;
+  }
+
+  .kpg-post-meta-avatar {
+    width: 2.8302vw;
+    height: 2.8302vw;
+  }
+
+  .kpg-post-meta-author-info {
+    width: max-content;
+    min-width: 11.0259vw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4717vw;
+  }
+
+  .kpg-post-meta-author-label {
+    display: block;
+    font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.9434vw;
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: -0.0189vw;
+    color: #899596;
+    text-transform: lowercase;
+  }
+
+  .kpg-post-meta-author-name {
+    font-size: 0.9434vw;
+    line-height: 1.2;
+    letter-spacing: 0.0472vw;
+    color: #404848;
+  }
+
+  .kpg-post-meta-right-section {
+    width: 39.7406vw;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-left: auto;
+  }
+
+  .kpg-post-meta-right-section--date-only {
+    width: 24.9410vw;
+    justify-content: flex-start;
+  }
+
+  .kpg-post-meta-right-section--share-only {
+    width: 7.5472vw;
+    justify-content: flex-end;
+  }
+
+  .kpg-post-meta-date-section {
+    width: 24.9410vw;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4717vw;
+    min-width: 0;
+  }
+
+  .kpg-post-meta-date-label,
+  .kpg-post-meta-date-value {
+    font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.9434vw;
+    font-weight: 300;
+    line-height: 1.2;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    width: 100%;
+  }
+
+  .kpg-post-meta-date-label {
+    color: #899596;
+    letter-spacing: -0.0189vw;
+  }
+
+  .kpg-post-meta-date-value {
+    color: #404848;
+    letter-spacing: 0.0472vw;
+  }
+
+  .kpg-post-meta-date-text {
+    letter-spacing: inherit;
+  }
+
+  .kpg-post-meta-share-section {
+    width: 7.5472vw;
+    gap: 0.9434vw;
+    justify-content: flex-end;
+    margin-top: 0;
+  }
+
+  .kpg-post-meta-share-text {
+    display: inline;
+    font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.9434vw;
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: 0.0472vw;
+    text-transform: uppercase;
+    color: #404848;
+    white-space: nowrap;
+  }
 }

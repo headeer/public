@@ -194,11 +194,11 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 								</div>
 							<?php endif; ?>
 							
-							<h2 class="kpg-blog-desktop-title">
+							<h3 class="kpg-blog-desktop-title">
 								<a href="<?php the_permalink(); ?>">
 									<?php the_title(); ?>
 								</a>
-							</h2>
+							</h3>
 							
 							<div class="kpg-blog-desktop-excerpt">
 								<div class="kpg-blog-desktop-excerpt-inner">
@@ -254,13 +254,12 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 			$pages[] = [ 'number' => $max, 'is_separator' => false ];
 		}
 		
-		// Get blog base URL
-		$posts_page_id = get_option( 'page_for_posts' );
-		if ( $posts_page_id ) {
-			$blog_base_url = rtrim( get_permalink( $posts_page_id ), '/' );
-		} else {
-			$blog_base_url = rtrim( home_url( '/blog' ), '/' );
+		// Get base URL from current paginated context (blog/author/search/etc.)
+		$base_page_url = get_pagenum_link( 1 );
+		if ( ! is_string( $base_page_url ) || empty( $base_page_url ) ) {
+			$base_page_url = home_url( '/' );
 		}
+		$blog_base_url = rtrim( strtok( $base_page_url, '?' ), '/' );
 		
 		// Preserve search query in pagination
 		$search_query = '';
@@ -303,7 +302,7 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 				<# for (var i = 0; i < 6; i++) { #>
 					<article class="kpg-blog-desktop-item">
 						<div class="kpg-blog-desktop-image" style="background: #e3ebec;"></div>
-						<h2 class="kpg-blog-desktop-title"><a href="#">Post Title</a></h2>
+						<h3 class="kpg-blog-desktop-title"><a href="#">Post Title</a></h3>
 						<div class="kpg-blog-desktop-excerpt">
 							<div class="kpg-blog-desktop-excerpt-inner">Excerpt text...</div>
 						</div>
@@ -331,4 +330,3 @@ class KPG_Elementor_Blog_Archive_Desktop_Widget extends Widget_Base {
 		<?php
 	}
 }
-

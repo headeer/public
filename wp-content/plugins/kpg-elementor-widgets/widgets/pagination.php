@@ -197,6 +197,12 @@ class KPG_Elementor_Pagination_Widget extends Widget_Base {
 		}
 
 		$pages = $this->render_page_numbers( $data['current'], $data['max'] );
+
+		$base_page_url = get_pagenum_link( 1 );
+		if ( ! is_string( $base_page_url ) || empty( $base_page_url ) ) {
+			$base_page_url = home_url( '/' );
+		}
+		$blog_base_url = rtrim( strtok( $base_page_url, '?' ), '/' );
 		?>
 		
 		<?php if ( $settings['show_separator'] === 'yes' ) : ?>
@@ -204,7 +210,7 @@ class KPG_Elementor_Pagination_Widget extends Widget_Base {
 			<div class="kpg-blog-separator"></div>
 		<?php endif; ?>
 		
-		<div class="kpg-blog-pagination">
+		<div class="kpg-blog-pagination" data-blog-base-url="<?php echo esc_attr( $blog_base_url ); ?>">
 			<div class="kpg-blog-pagination-numbers">
 				<?php foreach ( $pages as $page ) : ?>
 					<?php if ( isset( $page['is_separator'] ) && $page['is_separator'] ) : ?>
@@ -260,7 +266,6 @@ class KPG_Elementor_Pagination_Widget extends Widget_Base {
 		<?php
 	}
 }
-
 
 
 

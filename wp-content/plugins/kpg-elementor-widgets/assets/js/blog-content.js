@@ -23,19 +23,44 @@
 		var importantPosition = $placeholder.data('important-position') || '';
 		var importantText = $placeholder.data('important-text') || '';
 
-		// Find Elementor content - try multiple selectors
-		var $elementorContent = $('.elementor-element-44c7ac50 .e-con-inner, .elementor-post__content, .elementor-widget-theme-post-content .elementor-widget-container, .entry-content, .post-content, article .elementor, .elementor-12620 .e-con-inner');
-		
-		if ($elementorContent.length === 0) {
-			// Try to find content in the page
-			$elementorContent = $('body').find('h2, h3, p').first().closest('.elementor, .entry-content, article');
-			if ($elementorContent.length === 0) {
-				return;
+		// Find Elementor post content – kolejne próby (bez hardkodowanych ID), żeby lead i sekcje się wyświetlały
+		var $elementorContent = null;
+		var selectors = [
+			'.elementor-widget-theme-post-content .elementor-widget-container',
+			'.elementor-post__content',
+			'.elementor-widget-theme-post-content .e-con-inner',
+			'article .elementor-widget-theme-post-content .elementor-widget-container',
+			'article .elementor .e-con-inner',
+			'.entry-content',
+			'.post-content'
+		];
+		for (var s = 0; s < selectors.length; s++) {
+			var $candidate = $(selectors[s]).filter(function() {
+				return !$(this).closest('.kpg-blog-content-container').length;
+			});
+			if ($candidate.length) {
+				// We want the container that has article body (h2 + p), prefer one with most content
+				var $best = $candidate.first();
+				$candidate.each(function() {
+					var $el = $(this);
+					var $els = $el.find('h2, h3, h4, p, ul, ol').filter(function() { return $(this).text().trim().length > 0; });
+					if ($els.length > 0 && ($best.find('h2, h3, h4, p').length === 0 || $els.length > $best.find('h2, h3, h4, p, ul, ol').length)) {
+						$best = $el;
+					}
+				});
+				$elementorContent = $best;
+				break;
 			}
 		}
+		if (!$elementorContent || !$elementorContent.length) {
+			$elementorContent = $('body').find('h2, h3, h4, p').first().closest('.elementor, .entry-content, article');
+		}
+		if (!$elementorContent || !$elementorContent.length) {
+			return;
+		}
 
-		// Get all content elements in order - look for headings and paragraphs
-		var $allElements = $elementorContent.find('h2, h3, p, ul, ol').filter(function() {
+		// Get all content elements in order - look for headings and paragraphs (w tym pierwszy akapit = lead)
+		var $allElements = $elementorContent.find('h2, h3, h4, p, ul, ol').filter(function() {
 			return $(this).text().trim().length > 0;
 		});
 

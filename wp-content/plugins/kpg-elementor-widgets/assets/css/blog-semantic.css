@@ -64,6 +64,286 @@ aside.kpg-blog-sidebar-related {
   /* Preserve Elementor styles */
 }
 
+.kpg-related-figma-legacy-hidden {
+  display: none !important;
+}
 
+.kpg-related-figma-meta-avatar-link {
+  display: inline-flex;
+  flex-shrink: 0;
+  text-decoration: none;
+}
 
+.kpg-related-figma-meta-avatar-link:hover {
+  opacity: 0.9;
+}
 
+.kpg-related-figma-meta-author {
+  color: inherit;
+  text-decoration: none;
+}
+
+.kpg-related-figma-meta-author:hover {
+  text-decoration: underline;
+}
+
+.kpg-related-figma-meta-sep,
+.kpg-related-figma-meta-date {
+  color: inherit;
+}
+
+/* "Zobacz inne artykuły" mobile implementation from Figma (node 275:902) */
+@media (max-width: 1199px) {
+  .kpg-related-figma {
+    background: #E3EBEC;
+    border-radius: 8px;
+    padding: 8px 8px 16px;
+  }
+
+  .kpg-related-figma-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .kpg-related-figma-card {
+    display: block;
+    min-width: 0;
+  }
+
+  .kpg-related-figma-card + .kpg-related-figma-card {
+    border-top: 1px solid #404848;
+    margin-top: 40px;
+    padding-top: 0;
+  }
+
+  .kpg-related-figma-thumb {
+    aspect-ratio: 342 / 254;
+    border-radius: 8px;
+    display: block;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .kpg-related-figma-thumb img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .kpg-related-figma-body {
+    margin-top: 32px;
+    min-width: 0;
+  }
+
+  .kpg-related-figma-title {
+    margin: 0 0 32px;
+  }
+
+  .kpg-related-figma-title a {
+    color: #404848;
+    display: block;
+    font-family: var(--kpg-font-primary, 'Nohemi', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif);
+    font-size: 26px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .kpg-related-figma-excerpt-wrap {
+    margin-bottom: 32px;
+  }
+
+  .kpg-related-figma-excerpt {
+    border-left: 4px solid #BEC8C9;
+    color: #404848;
+    font-family: var(--kpg-font-primary, 'Nohemi', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 1.4;
+    margin: 0;
+    padding-left: 16px;
+  }
+
+  .kpg-related-figma-meta {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    min-height: 32px;
+  }
+
+  .kpg-related-figma-meta-avatar {
+    aspect-ratio: 1 / 1;
+    border-radius: 999px;
+    clip-path: circle(50% at 50% 50%);
+    display: block;
+    flex-shrink: 0;
+    height: 32px;
+    object-fit: cover;
+    width: 32px;
+  }
+
+  .kpg-related-figma-meta-avatar--empty {
+    background: #c5d2d3;
+  }
+
+  .kpg-related-figma-meta-text {
+    color: #404848;
+    font-family: var(--kpg-font-mono, 'DM Mono', monospace);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    letter-spacing: 0.6px;
+    line-height: 1.2;
+    margin-top: 1px;
+    text-transform: uppercase;
+    white-space: normal;
+  }
+}
+
+/* "Zobacz inne artykuły" desktop implementation from Figma (node 272:301) */
+@media (min-width: 1200px) {
+  .kpg-related-figma {
+    background: #E3EBEC;
+    border-radius: 8px;
+    padding: 39px 16px 126px;
+  }
+
+  .kpg-related-figma > .elementor-element.elementor-widget-heading,
+  .kpg-related-figma > .elementor-widget-heading {
+    margin-bottom: 64px;
+  }
+
+  .kpg-related-figma > .elementor-element.elementor-widget-heading > .elementor-widget-container,
+  .kpg-related-figma > .elementor-widget-heading > .elementor-widget-container {
+    border-bottom: 1px solid #404848;
+    margin: 0;
+    padding-bottom: 16px;
+  }
+
+  .kpg-related-figma > .elementor-element.elementor-widget-heading .elementor-heading-title,
+  .kpg-related-figma > .elementor-widget-heading .elementor-heading-title {
+    color: #404848;
+    font-family: var(--kpg-font-primary, 'Nohemi', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif);
+    font-size: 42px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: 0;
+    margin: 0;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .kpg-related-figma-grid {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpg-related-figma-card {
+    display: grid;
+    grid-template-columns: 392px minmax(0, 392px);
+    column-gap: 32px;
+    min-width: 0;
+  }
+
+  .kpg-related-figma-thumb {
+    border-radius: 8px;
+    display: block;
+    height: 291px;
+    overflow: hidden;
+    width: 392px;
+  }
+
+  .kpg-related-figma-thumb img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .kpg-related-figma-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .kpg-related-figma-title {
+    margin: 0 0 32px;
+  }
+
+  .kpg-related-figma-title a {
+    color: #404848;
+    display: block;
+    font-family: var(--kpg-font-primary, 'Nohemi', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif);
+    font-size: 26px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+
+  .kpg-related-figma-title a:hover {
+    text-decoration: underline;
+  }
+
+  .kpg-related-figma-excerpt-wrap {
+    padding: 0 16px;
+  }
+
+  .kpg-related-figma-excerpt {
+    border-left: 1px solid #404848;
+    color: #404848;
+    font-family: var(--kpg-font-primary, 'Nohemi', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    letter-spacing: 0.16px;
+    line-height: 24px;
+    margin: 0;
+    max-height: 77px;
+    min-height: 77px;
+    overflow: hidden;
+    padding-left: 8px;
+    text-overflow: ellipsis;
+  }
+
+  .kpg-related-figma-meta {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    margin-top: 69px;
+    min-height: 32px;
+  }
+
+  .kpg-related-figma-meta-avatar {
+    aspect-ratio: 1 / 1;
+    border-radius: 999px;
+    clip-path: circle(50% at 50% 50%);
+    display: block;
+    flex-shrink: 0;
+    height: 32px;
+    object-fit: cover;
+    width: 32px;
+  }
+
+  .kpg-related-figma-meta-avatar--empty {
+    background: #c5d2d3;
+  }
+
+  .kpg-related-figma-meta-text {
+    color: #6F7B7C;
+    font-family: var(--kpg-font-mono, 'DM Mono', monospace);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    letter-spacing: -0.24px;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+}

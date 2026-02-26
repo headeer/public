@@ -331,18 +331,23 @@ class KPG_Elementor_Blog_Content_Widget extends Widget_Base {
 		$author_linkedin = get_user_meta( $author_id, 'author_linkedin', true ) ?: '';
 		$author_facebook = get_user_meta( $author_id, 'author_facebook', true ) ?: '';
 		$author_image = kpg_get_author_avatar_url( $author_id, 251 );
+		$author_archive_url = get_author_posts_url( $author_id );
 		
 		?>
 		<div class="kpg-blog-author-section">
 			<div class="kpg-blog-author-frame">
 				<?php if ( $author_image ) : ?>
-					<div class="kpg-blog-author-image" style="background-image: url('<?php echo esc_url( $author_image ); ?>');"></div>
+					<a href="<?php echo esc_url( $author_archive_url ); ?>" class="kpg-blog-author-image-link" aria-label="<?php echo esc_attr( sprintf( 'Zobacz artykuły autora: %s', $author_name ) ); ?>" rel="author">
+						<div class="kpg-blog-author-image" style="background-image: url('<?php echo esc_url( $author_image ); ?>');"></div>
+					</a>
 				<?php endif; ?>
 				<div class="kpg-blog-author-content">
 					<div class="kpg-blog-author-header">
 						<div class="kpg-blog-author-info">
 							<div class="kpg-blog-author-name-wrapper">
-								<span class="kpg-blog-author-name"><?php echo esc_html( $author_name ); ?></span>
+								<a href="<?php echo esc_url( $author_archive_url ); ?>" class="kpg-blog-author-name-link" rel="author">
+									<span class="kpg-blog-author-name"><?php echo esc_html( $author_name ); ?></span>
+								</a>
 								<span class="kpg-blog-author-title"><?php echo esc_html( $author_title ); ?></span>
 							</div>
 							<?php if ( $author_linkedin || $author_facebook ) : ?>
@@ -373,4 +378,3 @@ class KPG_Elementor_Blog_Content_Widget extends Widget_Base {
 		<?php
 	}
 }
-

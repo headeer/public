@@ -141,6 +141,18 @@
     // Initialize Swiper
     initSwiper();
 
+    // Click handlers for ALL arrow buttons (Swiper nav only binds first pair; we have multiple pairs per slide)
+    $container.on('click', '.kpg-team-slider-arrow-next', function(e) {
+      e.preventDefault();
+      if (!swiper || $(this).prop('disabled')) return;
+      swiper.slideNext();
+    });
+    $container.on('click', '.kpg-team-slider-arrow-prev', function(e) {
+      e.preventDefault();
+      if (!swiper || $(this).prop('disabled')) return;
+      swiper.slidePrev();
+    });
+
     // Enable touch swipe on content section (mobile only)
     function enableContentSwipe() {
       var isMobile = window.matchMedia('(max-width: 1024px)').matches;

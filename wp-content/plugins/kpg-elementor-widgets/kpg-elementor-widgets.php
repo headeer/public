@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class KPG_Elementor_Widgets {
 
-	const VERSION = '1.0.5';
+	const VERSION = '1.0.6';
 	const MINIMUM_ELEMENTOR_VERSION = '3.0.0';
 	const MINIMUM_PHP_VERSION = '7.4';
 
@@ -72,6 +72,9 @@ final class KPG_Elementor_Widgets {
 		
 		// Load user profile fields
 		require_once( __DIR__ . '/includes/user-profile-fields.php' );
+
+		// Load REST fields for related posts cards (author avatar/name/date)
+		require_once( __DIR__ . '/includes/related-posts-rest-fields.php' );
 		
 		// Load author permalink settings
 		require_once( __DIR__ . '/includes/author-permalink-settings.php' );
@@ -576,6 +579,15 @@ final class KPG_Elementor_Widgets {
 			self::VERSION,
 			true
 		);
+
+		// Related Posts Desktop (single post - "Zobacz inne artykuły")
+		wp_register_script(
+			'kpg-related-posts-desktop-script',
+			plugins_url( 'assets/js/related-posts-desktop.js', __FILE__ ),
+			[ 'jquery' ],
+			self::VERSION,
+			true
+		);
 	}
 
 	/**
@@ -590,6 +602,16 @@ final class KPG_Elementor_Widgets {
 	 */
 	public function enqueue_blog_structure_script() {
 		if ( is_single() && get_post_type() === 'post' ) {
+			wp_localize_script(
+				'kpg-related-posts-desktop-script',
+				'kpgRelatedPostsDesktopData',
+				[
+					'restUrl' => esc_url_raw( rest_url( 'wp/v2/' ) ),
+					'postId'  => (int) get_the_ID(),
+				]
+			);
+
+			wp_enqueue_script( 'kpg-related-posts-desktop-script' );
 			wp_enqueue_script( 'kpg-blog-structure-script' );
 			wp_enqueue_style( 'kpg-blog-semantic-style' );
 		}
@@ -730,4 +752,3 @@ final class KPG_Elementor_Widgets {
 
 // Initialize the plugin
 KPG_Elementor_Widgets::instance();
-

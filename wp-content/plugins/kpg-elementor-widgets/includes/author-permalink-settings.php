@@ -101,3 +101,35 @@ function kpg_flush_rewrite_rules_on_author_base_change() {
 }
 add_action( 'admin_init', 'kpg_flush_rewrite_rules_on_author_base_change' );
 
+/**
+ * Redirect author base root (e.g. /autor/) to team section.
+ * There is no author index page in this project.
+ */
+function kpg_redirect_author_base_root_to_team() {
+	if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+		return;
+	}
+
+	if ( isset( $_SERVER['REQUEST_METHOD'] ) && strtoupper( $_SERVER['REQUEST_METHOD'] ) !== 'GET' ) {
+		return;
+	}
+
+	$author_base = get_option( 'author_base', 'autor' );
+	$author_base = sanitize_title( $author_base );
+	if ( empty( $author_base ) ) {
+		$author_base = 'autor';
+	}
+
+	$request_uri = $_SERVER['REQUEST_URI'] ?? '';
+	$request_path = parse_url( $request_uri, PHP_URL_PATH );
+	if ( ! is_string( $request_path ) ) {
+		return;
+	}
+
+	$normalized_path = trim( $request_path, '/' );
+	if ( $normalized_path === $author_base || $normalized_path === 'author' ) {
+		wp_safe_redirect( home_url( '/#team' ), 301 );
+		exit;
+	}
+}
+add_action( 'template_redirect', 'kpg_redirect_author_base_root_to_team', 1 );

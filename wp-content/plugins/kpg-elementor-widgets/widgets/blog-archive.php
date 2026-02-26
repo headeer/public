@@ -231,11 +231,11 @@ class KPG_Elementor_Blog_Archive_Widget extends Widget_Base {
 				</div>
 			<?php endif; ?>
 			
-			<h2 class="kpg-featured-post-title">
+			<h3 class="kpg-featured-post-title">
 				<a href="<?php the_permalink(); ?>">
 					<?php the_title(); ?>
 				</a>
-			</h2>
+			</h3>
 			
 			<div class="kpg-featured-post-excerpt">
 				<?php echo esc_html( wp_trim_words( get_the_excerpt(), 50 ) ); ?>
@@ -351,11 +351,11 @@ class KPG_Elementor_Blog_Archive_Widget extends Widget_Base {
 				</div>
 			<?php endif; ?>
 			
-			<h2 class="kpg-post-large-title">
+			<h3 class="kpg-post-large-title">
 				<a href="<?php the_permalink(); ?>">
 					<?php the_title(); ?>
 				</a>
-			</h2>
+			</h3>
 			
 			<div class="kpg-post-large-excerpt-wrapper">
 				<div class="kpg-post-large-excerpt-inner">
@@ -427,13 +427,12 @@ class KPG_Elementor_Blog_Archive_Widget extends Widget_Base {
 		<?php endif; ?>
 		
 		<?php
-		// Get blog base URL
-		$posts_page_id = get_option( 'page_for_posts' );
-		if ( $posts_page_id ) {
-			$blog_base_url = rtrim( get_permalink( $posts_page_id ), '/' );
-		} else {
-			$blog_base_url = rtrim( home_url( '/blog' ), '/' );
+		// Get base URL from current paginated context (blog/author/search/etc.)
+		$base_page_url = get_pagenum_link( 1 );
+		if ( ! is_string( $base_page_url ) || empty( $base_page_url ) ) {
+			$base_page_url = home_url( '/' );
 		}
+		$blog_base_url = rtrim( strtok( $base_page_url, '?' ), '/' );
 		?>
 		<div class="kpg-blog-pagination" data-blog-base-url="<?php echo esc_attr( $blog_base_url ); ?>">
 			<div class="kpg-blog-pagination-numbers">
@@ -469,9 +468,9 @@ class KPG_Elementor_Blog_Archive_Widget extends Widget_Base {
 					<span class="kpg-featured-post-label-text">BLOG</span>
 				</div>
 				<div class="kpg-featured-post-image" style="background: #e3ebec; height: 257px;"></div>
-				<h2 class="kpg-featured-post-title">
+				<h3 class="kpg-featured-post-title">
 					<a href="#">Featured Post Title</a>
-				</h2>
+				</h3>
 				<div class="kpg-featured-post-excerpt">
 					Post excerpt text goes here...
 				</div>
@@ -520,4 +519,3 @@ class KPG_Elementor_Blog_Archive_Widget extends Widget_Base {
 		<?php
 	}
 }
-

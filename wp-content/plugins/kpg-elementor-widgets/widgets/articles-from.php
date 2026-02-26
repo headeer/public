@@ -223,7 +223,7 @@ class KPG_Elementor_Articles_From_Widget extends Widget_Base {
 			<article class="kpg-author-card" itemscope itemtype="https://schema.org/Person">
 				
 				<header class="kpg-author-card-header">
-					<h2 class="kpg-author-card-title"><?php echo esc_html__( 'Artykuły od:', 'kpg-elementor-widgets' ); ?></h2>
+					<span class="kpg-author-card-title"><?php echo esc_html__( 'Artykuły od:', 'kpg-elementor-widgets' ); ?></span>
 				</header>
 				
 				<figure class="kpg-author-card-image">
@@ -241,11 +241,11 @@ class KPG_Elementor_Articles_From_Widget extends Widget_Base {
 				
 				<div class="kpg-author-card-body">
 					<div class="kpg-author-card-meta">
-						<h3 class="kpg-author-card-name" itemprop="name">
+						<h2 class="kpg-author-card-name" itemprop="name">
 							<a href="<?php echo esc_url( $author_url ); ?>" rel="author">
 								<?php echo esc_html( $author['name'] ); ?>
 							</a>
-						</h3>
+						</h2>
 						<p class="kpg-author-card-position" itemprop="jobTitle">
 							<?php echo esc_html( $author['position'] ); ?>
 						</p>
@@ -301,12 +301,12 @@ class KPG_Elementor_Articles_From_Widget extends Widget_Base {
 		<aside class="kpg-author-sidebar">
 			<article class="kpg-author-card">
 				<header class="kpg-author-card-header">
-					<h2 class="kpg-author-card-title"><?php echo esc_html__( 'Artykuły od:', 'kpg-elementor-widgets' ); ?></h2>
+					<span class="kpg-author-card-title"><?php echo esc_html__( 'Artykuły od:', 'kpg-elementor-widgets' ); ?></span>
 				</header>
 				<figure class="kpg-author-card-image" style="background: #e3ebec; height: 269px; border-radius: 8px;"></figure>
 				<div class="kpg-author-card-body">
 					<div class="kpg-author-card-meta">
-						<h3 class="kpg-author-card-name">Mateusz Pęczkowski</h3>
+						<h2 class="kpg-author-card-name">Mateusz Pęczkowski</h2>
 						<p class="kpg-author-card-position">RADCA PRAWNY</p>
 					</div>
 					<div class="kpg-author-card-bio">Bio text...</div>
@@ -320,5 +320,4 @@ class KPG_Elementor_Articles_From_Widget extends Widget_Base {
 		<?php
 	}
 }
-
 

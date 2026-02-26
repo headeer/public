@@ -187,10 +187,16 @@ class KPG_Elementor_Breadcrumbs_Widget extends Widget_Base {
 			$author = get_queried_object();
 			// Better check to avoid conflicts with Rank Math SEO
 			if ( $author && is_object( $author ) && isset( $author->ID ) && isset( $author->user_login ) ) {
+				$author_base = get_option( 'author_base', 'autor' );
+				$author_base = sanitize_title( $author_base );
+				if ( empty( $author_base ) ) {
+					$author_base = 'autor';
+				}
+
 				// Add "Autor" link before author name
 				$items[] = [
 					'label' => __( 'Autor', 'kpg-elementor-widgets' ),
-					'url'   => '', // No link for "Autor" - it's just a label
+					'url'   => home_url( '/' . $author_base . '/' ),
 					'type'  => 'author-label',
 				];
 				
@@ -358,5 +364,4 @@ class KPG_Elementor_Breadcrumbs_Widget extends Widget_Base {
 		<?php
 	}
 }
-
 
