@@ -4,19 +4,17 @@
  * Simple, clean pagination handler
  */
 
+function kpgGetContextBaseUrl(currentUrl) {
+	var pathname = currentUrl.pathname.replace(/\/page\/\d+\/?$/, '');
+	if (!pathname) {
+		pathname = '/';
+	}
+	return currentUrl.origin + pathname;
+}
+
 // IMMEDIATE handler - działa BEZ jQuery, natychmiast po załadowaniu skryptu
 (function() {
 	'use strict';
-	
-	console.log('[KPG Pagination] Script loaded, setting up immediate handler');
-
-	function getContextBaseUrl(currentUrl) {
-		var pathname = currentUrl.pathname.replace(/\/page\/\d+\/?$/, '');
-		if (!pathname) {
-			pathname = '/';
-		}
-		return currentUrl.origin + pathname;
-	}
 	
 	// Handler który działa NATYCHMIAST, przed jQuery ready
 	document.addEventListener('click', function(e) {
@@ -26,18 +24,20 @@
 		var paginationItem = target.closest('.kpg-blog-pagination-item');
 		
 		if (paginationItem) {
-			console.log('[KPG Pagination] IMMEDIATE: Pagination item clicked!', paginationItem);
-			console.log('[KPG Pagination] IMMEDIATE: Event target:', target);
-			console.log('[KPG Pagination] IMMEDIATE: Event type:', e.type);
-			console.log('[KPG Pagination] IMMEDIATE: Event phase:', e.eventPhase);
-			
 			// BLOKUJ WSZYSTKO
 			e.preventDefault();
 			e.stopPropagation();
 			e.stopImmediatePropagation();
+
+			if (
+				paginationItem.disabled ||
+				paginationItem.classList.contains('active') ||
+				paginationItem.getAttribute('aria-current') === 'page'
+			) {
+				return false;
+			}
 			
 			var page = parseInt(paginationItem.getAttribute('data-page'));
-			console.log('[KPG Pagination] IMMEDIATE: Page number:', page);
 			
 			if (page) {
 				// Znajdź blog base URL
@@ -48,7 +48,7 @@
 					blogBaseUrl = paginationContainer.dataset.blogBaseUrl;
 				} else {
 					var url = new URL(window.location.href);
-					blogBaseUrl = getContextBaseUrl(url);
+					blogBaseUrl = kpgGetContextBaseUrl(url);
 				}
 				
 				blogBaseUrl = blogBaseUrl.replace(/\/$/, '');
@@ -83,7 +83,6 @@
 					paginationUrl += '?' + queryString;
 				}
 				
-				console.log('[KPG Pagination] IMMEDIATE: Navigating to:', paginationUrl);
 				window.location.href = paginationUrl;
 			}
 			
@@ -92,9 +91,7 @@
 		
 		// Sprawdź strzałkę
 		var arrow = target.closest('.kpg-blog-pagination-arrow');
-		if (arrow && !arrow.classList.contains('disabled')) {
-			console.log('[KPG Pagination] IMMEDIATE: Arrow clicked!', arrow);
-			
+		if (arrow && !arrow.classList.contains('disabled') && !arrow.disabled) {
 			e.preventDefault();
 			e.stopPropagation();
 			e.stopImmediatePropagation();
@@ -124,7 +121,7 @@
 					blogBaseUrl = paginationContainer.dataset.blogBaseUrl;
 				} else {
 					var url = new URL(window.location.href);
-					blogBaseUrl = getContextBaseUrl(url);
+					blogBaseUrl = kpgGetContextBaseUrl(url);
 				}
 				
 				blogBaseUrl = blogBaseUrl.replace(/\/$/, '');
@@ -149,7 +146,6 @@
 					paginationUrl += '&s=' + encodeURIComponent(searchQuery);
 				}
 				
-				console.log('[KPG Pagination] IMMEDIATE: Navigating to next page:', paginationUrl);
 				window.location.href = paginationUrl;
 			}
 			
@@ -157,7 +153,6 @@
 		}
 	}, true); // capture phase - przechwytuje PRZED wszystkimi innymi handlerami
 	
-	console.log('[KPG Pagination] Immediate handler registered');
 })();
 
 // jQuery-based handler (backup)
@@ -176,7 +171,7 @@
 		if ($pagination.length > 0 && $pagination.data('blog-base-url')) {
 			blogBaseUrl = $pagination.data('blog-base-url');
 		} else {
-			blogBaseUrl = getContextBaseUrl(url);
+			blogBaseUrl = kpgGetContextBaseUrl(url);
 		}
 		
 		blogBaseUrl = blogBaseUrl.replace(/\/$/, '');
@@ -245,7 +240,12 @@
 
 			// Disable arrow if on last page
 			if (currentPage >= maxPages) {
-				$arrow.addClass('disabled');
+				$arrow.addClass('disabled').attr({
+					'aria-disabled': 'true',
+					disabled: true
+				});
+			} else {
+				$arrow.removeClass('disabled').attr('aria-disabled', 'false').prop('disabled', false);
 			}
 
 			// Remove all existing handlers

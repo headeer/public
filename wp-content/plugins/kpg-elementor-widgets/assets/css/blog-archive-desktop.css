@@ -5,7 +5,6 @@
  * Max width: 1240px (73.1132vw)
  */
 
-@import '_kpg-colors.css';
 
 .kpg-blog-desktop-container {
   position: relative;
@@ -77,7 +76,8 @@
 }
 
 .kpg-blog-desktop-title a:hover {
-  opacity: 0.8;
+  color: #404848 !important;
+  opacity: 1;
 }
 
 /* Excerpt - fills remaining space, with border-left */
@@ -132,10 +132,19 @@
   font-size: 0.7076vw; /* 12px */
   font-weight: 300;
   line-height: 0.4717vw; /* 8px */
-  color: #6f7b7c;
+  color: var(--kpg-text-secondary);
   text-transform: uppercase;
   white-space: nowrap;
   letter-spacing: 0.0354vw; /* 0.6px */
+}
+
+.kpg-blog-desktop-author-date .kpg-post-meta-author {
+  color: #404848;
+}
+
+.kpg-blog-desktop-author-date .kpg-post-meta-separator,
+.kpg-blog-desktop-author-date .kpg-post-meta-date {
+  color: #404848;
 }
 
 /* PAGINATION - DESKTOP TYLKO */
@@ -167,7 +176,7 @@
   font-size: 0.7076vw !important; /* 12px */
   font-weight: 300 !important;
   line-height: 120% !important; /* 14.4px */
-  color: #a3afb0 !important;
+  color: var(--kpg-text-secondary) !important;
   letter-spacing: 0.0354vw !important; /* 0.6px */
   text-transform: uppercase !important;
   cursor: pointer !important;
@@ -211,4 +220,3 @@
   pointer-events: none !important;
   cursor: not-allowed !important;
 }
-

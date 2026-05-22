@@ -224,7 +224,20 @@ class KPG_Elementor_Blog_Featured_Widget extends Widget_Base {
 			</div>
 			<?php if ( $image_url ) : ?>
 				<a href="<?php echo esc_url( $permalink ); ?>" class="kpg-blog-featured-mobile-image-link">
-					<div class="kpg-blog-featured-mobile-image" style="background-image: url('<?php echo esc_url( $image_url ); ?>');"></div>
+					<?php
+					echo wp_get_attachment_image(
+						$image_id,
+						'medium_large',
+						false,
+						[
+							'class'         => 'kpg-blog-featured-mobile-image',
+							'loading'       => 'eager',
+							'decoding'      => 'async',
+							'fetchpriority' => 'high',
+							'sizes'         => '(max-width: 767px) calc(100vw - 16px), 359px',
+						]
+					);
+					?>
 				</a>
 			<?php endif; ?>
 			<h3 class="kpg-blog-featured-mobile-title">

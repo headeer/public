@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KPG Elementor Widgets
  * Description: Custom Elementor widgets for KPG project - blog, team, navigation
- * Version: 1.0.0
+ * Version: 1.1.74
  * Author: KPG Development Team
  * Text Domain: kpg-elementor-widgets
  * Requires PHP: 7.4
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class KPG_Elementor_Widgets {
 
-	const VERSION = '1.0.6';
+	const VERSION = '1.1.74';
 	const MINIMUM_ELEMENTOR_VERSION = '3.0.0';
 	const MINIMUM_PHP_VERSION = '7.4';
 
@@ -40,6 +40,8 @@ final class KPG_Elementor_Widgets {
 	public function __construct() {
 		add_action( 'plugins_loaded', [ $this, 'init' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+		add_action( 'admin_print_scripts', [ $this, 'dequeue_problematic_admin_scripts' ], 999 );
+		add_action( 'wp_print_scripts', [ $this, 'dequeue_problematic_admin_scripts' ], 999 );
 	}
 
 	/**
@@ -97,6 +99,11 @@ final class KPG_Elementor_Widgets {
 
 		// Enqueue global styles (spis responsive)
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_global_styles' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'dequeue_frontend_legacy_icon_assets' ], 999 );
+		add_action( 'wp_head', [ $this, 'print_primary_font_faces' ], 100 );
+		add_filter( 'elementor_pro/custom_fonts/font_display', [ $this, 'force_custom_font_display_swap' ], 10, 3 );
+		add_filter( 'wp_resource_hints', [ $this, 'add_frontend_resource_hints' ], 10, 2 );
+		add_filter( 'elementor/widget/render_content', [ $this, 'rename_related_posts_heading_server_side' ], 10, 2 );
 		
 		// Enqueue blog structure script on single posts
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_blog_structure_script' ] );
@@ -289,6 +296,44 @@ final class KPG_Elementor_Widgets {
 	}
 
 	/**
+	 * Replace legacy related-posts heading in server-rendered Elementor HTML
+	 * so users do not see the old title before frontend JS runs.
+	 */
+	public function rename_related_posts_heading_server_side( $content, $widget ) {
+		if ( ! is_string( $content ) || '' === $content ) {
+			return $content;
+		}
+
+		if ( ! is_singular( 'post' ) ) {
+			return $content;
+		}
+
+		if ( ! is_object( $widget ) || ! method_exists( $widget, 'get_name' ) ) {
+			return $content;
+		}
+
+		$widget_name = (string) $widget->get_name();
+		if ( 'heading' !== $widget_name && 'theme-post-title' !== $widget_name ) {
+			return $content;
+		}
+
+		$replacements = [
+			'Zobacz inne artykuły' => 'Powiązane wpisy',
+			'Zobacz inne artykuly' => 'Powiązane wpisy',
+			'Inne artykuły'        => 'Powiązane wpisy',
+			'Inne artykuly'        => 'Powiązane wpisy',
+		];
+
+		foreach ( $replacements as $from => $to ) {
+			if ( false !== strpos( $content, $from ) ) {
+				$content = str_replace( $from, $to, $content );
+			}
+		}
+
+		return $content;
+	}
+
+	/**
 	 * Admin notice for missing Elementor
 	 */
 	public function admin_notice_missing_elementor() {
@@ -372,7 +417,8 @@ final class KPG_Elementor_Widgets {
 			'kpg-blog-archive-desktop-style',
 			plugins_url( 'assets/css/blog-archive-desktop.css', __FILE__ ),
 			[],
-			self::VERSION
+			self::VERSION,
+			'screen and (min-width: 768px)'
 		);
 
 		// Blog Archive Mobile
@@ -380,7 +426,8 @@ final class KPG_Elementor_Widgets {
 			'kpg-blog-archive-mobile-style',
 			plugins_url( 'assets/css/blog-archive-mobile.css', __FILE__ ),
 			[],
-			self::VERSION
+			self::VERSION,
+			'screen and (max-width: 767px)'
 		);
 
 		// Blog Archive (old - keep for compatibility)
@@ -454,6 +501,14 @@ final class KPG_Elementor_Widgets {
 			self::VERSION
 		);
 
+		// Menu
+		wp_register_style(
+			'kpg-menu-style',
+			plugins_url( 'assets/css/menu.css', __FILE__ ),
+			[],
+			self::VERSION
+		);
+
 		// Blog Content (global)
 		wp_register_style(
 			'kpg-blog-content-style',
@@ -467,7 +522,8 @@ final class KPG_Elementor_Widgets {
 			'kpg-blog-featured-desktop-style',
 			plugins_url( 'assets/css/blog-featured-desktop.css', __FILE__ ),
 			[],
-			self::VERSION
+			self::VERSION,
+			'screen and (min-width: 768px)'
 		);
 
 		// Blog Featured Mobile
@@ -475,7 +531,8 @@ final class KPG_Elementor_Widgets {
 			'kpg-blog-featured-mobile-style',
 			plugins_url( 'assets/css/blog-featured-mobile.css', __FILE__ ),
 			[],
-			self::VERSION
+			self::VERSION,
+			'screen and (max-width: 767px)'
 		);
 
 		// Spis Responsive (spis_mobile / spis_desktop)
@@ -490,6 +547,14 @@ final class KPG_Elementor_Widgets {
 		wp_register_style(
 			'kpg-blog-semantic-style',
 			plugins_url( 'assets/css/blog-semantic.css', __FILE__ ),
+			[],
+			self::VERSION
+		);
+
+		// Frontend optimizations (inline only)
+		wp_register_style(
+			'kpg-frontend-optimizations-style',
+			false,
 			[],
 			self::VERSION
 		);
@@ -588,13 +653,329 @@ final class KPG_Elementor_Widgets {
 			self::VERSION,
 			true
 		);
+
+		// Mobile offcanvas menu: close on same-page anchor navigation.
+		wp_register_script(
+			'kpg-mobile-menu-anchor-close-script',
+			plugins_url( 'assets/js/mobile-menu-anchor-close.js', __FILE__ ),
+			[],
+			self::VERSION,
+			true
+		);
+
+		// Floating UI (dropdown positioning)
+		wp_register_script(
+			'floating-ui-dom',
+			plugins_url( 'assets/vendor/floating-ui.dom.umd.min.js', __FILE__ ),
+			[],
+			self::VERSION,
+			true
+		);
+
+		// KPG Menu
+		wp_register_script(
+			'kpg-menu-script',
+			plugins_url( 'assets/js/menu.js', __FILE__ ),
+			[],
+			self::VERSION,
+			true
+		);
+
+		// Elementor nested accordion fallback
+		wp_register_script(
+			'kpg-elementor-nested-accordion-fallback-script',
+			plugins_url( 'assets/js/elementor-nested-accordion-fallback.js', __FILE__ ),
+			[],
+			self::VERSION,
+			true
+		);
 	}
 
 	/**
 	 * Enqueue global styles
 	 */
 	public function enqueue_global_styles() {
-		wp_enqueue_style( 'kpg-spis-responsive-style' );
+		wp_enqueue_style( 'kpg-frontend-optimizations-style' );
+		$inline_css = trim( $this->get_shared_widget_tokens_css() . "\n" . $this->get_frontend_font_optimization_css() );
+		if ( '' !== $inline_css ) {
+			wp_add_inline_style( 'kpg-frontend-optimizations-style', $inline_css );
+		}
+		wp_enqueue_script( 'kpg-elementor-nested-accordion-fallback-script' );
+	}
+
+	/**
+	 * Inline shared widget tokens so widget styles can avoid extra @import requests.
+	 */
+	private function get_shared_widget_tokens_css() {
+		$file_path = __DIR__ . '/assets/css/_kpg-colors.css';
+		if ( ! is_readable( $file_path ) ) {
+			return '';
+		}
+
+		$css = file_get_contents( $file_path );
+		return is_string( $css ) ? trim( $css ) : '';
+	}
+
+	/**
+	 * Detect blog listing-like views that benefit from leaner font declarations.
+	 */
+	private function is_blog_listing_view() {
+		if ( is_admin() ) {
+			return false;
+		}
+
+		if ( is_home() || is_search() || is_category() || is_tag() || is_author() || is_date() ) {
+			return true;
+		}
+
+		if ( is_page( 'blog' ) ) {
+			return true;
+		}
+
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( (string) $_SERVER['REQUEST_URI'] ) : '';
+		return '' !== $request_uri && (bool) preg_match( '#(?:^|/)blog(?:/|$|\?)#i', $request_uri );
+	}
+
+	/**
+	 * Remove legacy Font Awesome 4 shim assets on frontend.
+	 * Keep regular Font Awesome files so current design stays intact.
+	 */
+	public function dequeue_frontend_legacy_icon_assets() {
+		if ( is_admin() ) {
+			return;
+		}
+
+		wp_dequeue_style( 'font-awesome-4-shim' );
+		wp_deregister_style( 'font-awesome-4-shim' );
+
+		wp_dequeue_script( 'font-awesome-4-shim' );
+		wp_deregister_script( 'font-awesome-4-shim' );
+	}
+
+	/**
+	 * Use swap for Elementor Pro custom fonts to avoid text invisibility on mobile.
+	 */
+	public function force_custom_font_display_swap( $display, $font_family, $data ) {
+		return 'swap';
+	}
+
+	/**
+	 * Print primary font-face rules after Elementor custom-font CSS.
+	 */
+	public function print_primary_font_faces() {
+		if ( is_admin() ) {
+			return;
+		}
+
+		$css = trim( $this->get_primary_font_face_css() . "\n" . $this->get_primary_font_override_css() );
+		if ( '' === $css ) {
+			return;
+		}
+
+		printf( "<style id=\"kpg-primary-fonts\">\n%s\n</style>\n", $css );
+	}
+
+	/**
+	 * Inline font-face hints for above-the-fold assets.
+	 *
+	 * Elementor stores some legacy settings as Nohemi families, so the primary
+	 * font-face block exposes those aliases while rendering the new Zalando font.
+	 */
+	private function get_frontend_font_optimization_css() {
+		$elementor_font_base = content_url( 'plugins/elementor/assets/lib/font-awesome/webfonts' );
+
+	return "
+	:root {
+		--kpg-font-primary: 'Zalando Sans SemiExpanded', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		--e-global-typography-primary-font-family: 'Zalando Sans SemiExpanded';
+		--e-global-typography-primary-font-weight: 300;
+		--e-global-typography-text-font-family: 'Zalando Sans SemiExpanded';
+		--e-global-typography-text-font-weight: 300;
+		--e-global-typography-accent-font-family: 'Zalando Sans SemiExpanded';
+		--e-global-typography-accent-font-weight: 300;
+	}
+	body[class*='elementor-kit-'] {
+		--kpg-font-primary: 'Zalando Sans SemiExpanded', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		--e-global-typography-primary-font-family: 'Zalando Sans SemiExpanded';
+		--e-global-typography-primary-font-weight: 300;
+		--e-global-typography-text-font-family: 'Zalando Sans SemiExpanded';
+		--e-global-typography-text-font-weight: 300;
+		--e-global-typography-accent-font-family: 'Zalando Sans SemiExpanded';
+		--e-global-typography-accent-font-weight: 300;
+	}
+	body {
+		font-family: var(--kpg-font-primary);
+		font-weight: 300;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+	button,
+	input,
+	select,
+	textarea {
+		font-family: var(--kpg-font-primary);
+	}
+	@font-face {
+		font-family: 'DM Mono';
+		font-style: normal;
+		font-weight: 300;
+		font-display: swap;
+		src: url('https://fonts.gstatic.com/s/dmmono/v16/aFTR7PB1QTsUX8KYvrGyEY2tbZX9.woff2') format('woff2');
+		unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+	}
+	@font-face {
+		font-family: 'DM Mono';
+		font-style: normal;
+		font-weight: 300;
+		font-display: swap;
+		src: url('https://fonts.gstatic.com/s/dmmono/v16/aFTR7PB1QTsUX8KYvrGyEYOtbQ.woff2') format('woff2');
+		unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	}
+	@font-face {
+		font-family: 'DM Mono';
+		font-style: normal;
+		font-weight: 400;
+		font-display: swap;
+		src: url('https://fonts.gstatic.com/s/dmmono/v16/aFTU7PB1QTsUX8KYthSQBLyM.woff2') format('woff2');
+		unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+	}
+	@font-face {
+		font-family: 'DM Mono';
+		font-style: normal;
+		font-weight: 400;
+		font-display: swap;
+		src: url('https://fonts.gstatic.com/s/dmmono/v16/aFTU7PB1QTsUX8KYthqQBA.woff2') format('woff2');
+		unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	}
+	@font-face {
+		font-family: 'DM Mono';
+		font-style: normal;
+		font-weight: 500;
+		font-display: swap;
+		src: url('https://fonts.gstatic.com/s/dmmono/v16/aFTR7PB1QTsUX8KYvumzEY2tbZX9.woff2') format('woff2');
+		unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+	}
+	@font-face {
+		font-family: 'DM Mono';
+		font-style: normal;
+		font-weight: 500;
+		font-display: swap;
+		src: url('https://fonts.gstatic.com/s/dmmono/v16/aFTR7PB1QTsUX8KYvumzEYOtbQ.woff2') format('woff2');
+		unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	}
+	body .kpgio-lista .tresc,
+	body .kpgio-lista li > span.tresc {
+		font-weight: 300 !important;
+	}
+			@font-face {
+		font-family: 'Font Awesome 5 Free';
+		font-style: normal;
+		font-weight: 400;
+	font-display: swap;
+	src: url('{$elementor_font_base}/fa-regular-400.woff2') format('woff2'),
+		url('{$elementor_font_base}/fa-regular-400.woff') format('woff');
+}
+@font-face {
+	font-family: 'Font Awesome 5 Free';
+	font-style: normal;
+	font-weight: 900;
+	font-display: swap;
+	src: url('{$elementor_font_base}/fa-solid-900.woff2') format('woff2'),
+		url('{$elementor_font_base}/fa-solid-900.woff') format('woff');
+}
+@font-face {
+	font-family: 'Font Awesome 5 Brands';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('{$elementor_font_base}/fa-brands-400.woff2') format('woff2'),
+		url('{$elementor_font_base}/fa-brands-400.woff') format('woff');
+}";
+	}
+
+	/**
+	 * Build primary font-face rules and legacy Nohemi aliases.
+	 */
+	private function get_primary_font_face_css() {
+		$src      = "url('https://fonts.gstatic.com/s/zalandosanssemiexpanded/v3/6qLhKYcHuh3msE9OaXROVVclRRa-ClZSEipa2hrEzR2jhk_n3T6ACkCFEnP9.ttf') format('truetype')";
+		$weights  = $this->is_blog_listing_view() ? [ 300 ] : [ 100, 200, 300, 400, 500, 600, 700, 800, 900 ];
+		$families = [
+			'Zalando Sans SemiExpanded',
+			'Nohemi',
+			'Nohemi Light',
+			'Nohemi Thin',
+			'Nohemi ExtraLight',
+			'Nohemi Regular',
+			'Nohemi Medium',
+			'Nohemi SemiBold',
+			'Nohemi Bold',
+			'Nohemi ExtraBold',
+			'Nohemi Black',
+		];
+
+		$rules = [];
+		foreach ( $families as $family ) {
+			foreach ( $weights as $weight ) {
+				$rules[] = $this->build_font_face_rule( $family, $weight, $src );
+			}
+		}
+
+		return implode( "\n", $rules );
+	}
+
+	/**
+	 * Print after theme styles so the base document font survives Hello reset CSS.
+	 */
+	private function get_primary_font_override_css() {
+		return "
+html body {
+	font-family: var(--kpg-font-primary);
+	font-weight: 300;
+}
+html body button,
+html body input,
+html body select,
+html body textarea {
+	font-family: var(--kpg-font-primary);
+}";
+	}
+
+	/**
+	 * Build one font-face rule.
+	 */
+	private function build_font_face_rule( $family, $weight, $src ) {
+		return sprintf(
+			"@font-face {\n\tfont-family: '%s';\n\tfont-style: normal;\n\tfont-weight: %s;\n\tfont-display: swap;\n\tsrc: %s;\n}",
+			esc_attr( $family ),
+			esc_attr( (string) $weight ),
+			$src
+		);
+	}
+
+	/**
+	 * Add safe frontend resource hints for third-party assets used above the fold.
+	 */
+	public function add_frontend_resource_hints( $urls, $relation_type ) {
+		if ( is_admin() ) {
+			return $urls;
+		}
+
+		$needs_jsdelivr = wp_style_is( 'swiper', 'enqueued' ) || wp_script_is( 'swiper', 'enqueued' );
+
+		if ( 'preconnect' === $relation_type ) {
+			$urls[] = [
+				'href'        => 'https://fonts.gstatic.com',
+				'crossorigin' => 'anonymous',
+			];
+			if ( $needs_jsdelivr ) {
+				$urls[] = [
+					'href'        => 'https://cdn.jsdelivr.net',
+					'crossorigin' => '',
+				];
+			}
+		}
+
+		return array_unique( $urls, SORT_REGULAR );
 	}
 
 	/**
@@ -725,6 +1106,12 @@ final class KPG_Elementor_Widgets {
 			require_once( __DIR__ . '/widgets/onas.php' );
 			$widgets_manager->register( new \KPG_Elementor_Onas_Widget() );
 		}
+
+		// Widget 13: Menu
+		if ( file_exists( __DIR__ . '/widgets/menu.php' ) ) {
+			require_once( __DIR__ . '/widgets/menu.php' );
+			$widgets_manager->register( new \KPG_Elementor_Menu_Widget() );
+		}
 	}
 
 	/**
@@ -747,6 +1134,33 @@ final class KPG_Elementor_Widgets {
 			self::VERSION,
 			true
 		);
+	}
+
+	/**
+	 * Remove frontend-only custom scripts that break Elementor/Rank Math in admin.
+	 */
+	public function dequeue_problematic_admin_scripts() {
+		global $wp_scripts;
+
+		if ( ! $wp_scripts instanceof \WP_Scripts ) {
+			return;
+		}
+
+		foreach ( (array) $wp_scripts->queue as $handle ) {
+			if ( empty( $wp_scripts->registered[ $handle ] ) ) {
+				continue;
+			}
+
+			$script = $wp_scripts->registered[ $handle ];
+			$src    = (string) $script->src;
+
+			if ( strpos( $src, 'elementor-accordion-fix.js' ) === false ) {
+				continue;
+			}
+
+			wp_dequeue_script( $handle );
+			wp_deregister_script( $handle );
+		}
 	}
 }
 

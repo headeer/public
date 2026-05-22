@@ -229,7 +229,17 @@ class KPG_Elementor_Blog_Archive_Mobile_Widget extends Widget_Base {
 			<?php if ( has_post_thumbnail() ) : ?>
 				<div class="kpg-post-mobile-image">
 					<a href="<?php the_permalink(); ?>">
-						<?php the_post_thumbnail( 'thumbnail', [ 'style' => 'width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;' ] ); ?>
+						<?php
+						the_post_thumbnail(
+							'thumbnail',
+							[
+								'style'         => 'width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;',
+								'loading'       => 'lazy',
+								'decoding'      => 'async',
+								'fetchpriority' => 'low',
+							]
+						);
+						?>
 					</a>
 				</div>
 			<?php else : ?>
@@ -255,8 +265,10 @@ class KPG_Elementor_Blog_Archive_Mobile_Widget extends Widget_Base {
 						if ( empty( $name ) ) {
 							$name = get_the_author();
 						}
-						echo esc_html( $name . ' • ' . get_the_date( 'd/m/y' ) );
 						?>
+						<span class="kpg-post-meta-author"><?php echo esc_html( $name ); ?></span>
+						<span class="kpg-post-meta-separator"> • </span>
+						<span class="kpg-post-meta-date"><?php echo esc_html( get_the_date( 'd/m/y' ) ); ?></span>
 					</span>
 				</div>
 			</div>
@@ -270,7 +282,17 @@ class KPG_Elementor_Blog_Archive_Mobile_Widget extends Widget_Base {
 			<?php if ( has_post_thumbnail() ) : ?>
 				<div class="kpg-post-mobile-large-image">
 					<a href="<?php the_permalink(); ?>">
-						<?php the_post_thumbnail( 'large', [ 'style' => 'width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;' ] ); ?>
+						<?php
+						the_post_thumbnail(
+							'large',
+							[
+								'style'         => 'width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;',
+								'loading'       => 'lazy',
+								'decoding'      => 'async',
+								'fetchpriority' => 'low',
+							]
+						);
+						?>
 					</a>
 				</div>
 			<?php else : ?>
@@ -290,7 +312,7 @@ class KPG_Elementor_Blog_Archive_Mobile_Widget extends Widget_Base {
 			<div class="kpg-post-mobile-large-excerpt-wrapper">
 				<div class="kpg-post-mobile-large-excerpt-inner">
 					<span class="kpg-post-mobile-large-excerpt">
-						<?php echo esc_html( wp_trim_words( get_the_excerpt(), 50 ) ); ?>
+						<?php echo esc_html( wp_trim_words( get_the_excerpt(), 50, '...' ) ); ?>
 					</span>
 				</div>
 			</div>
@@ -317,8 +339,10 @@ class KPG_Elementor_Blog_Archive_Mobile_Widget extends Widget_Base {
 					if ( empty( $name ) ) {
 						$name = get_the_author();
 					}
-					echo esc_html( $name . ' • ' . get_the_date( 'd/m/y' ) );
 					?>
+					<span class="kpg-post-meta-author"><?php echo esc_html( $name ); ?></span>
+					<span class="kpg-post-meta-separator"> • </span>
+					<span class="kpg-post-meta-date"><?php echo esc_html( get_the_date( 'd/m/y' ) ); ?></span>
 				</span>
 			</div>
 		</div>
@@ -356,28 +380,31 @@ class KPG_Elementor_Blog_Archive_Mobile_Widget extends Widget_Base {
 			$search_query = get_query_var( 's' );
 		}
 		?>
-		<div class="kpg-blog-pagination" 
+		<nav class="kpg-blog-pagination" aria-label="<?php esc_attr_e( 'Paginacja bloga', 'kpg-elementor-widgets' ); ?>"
 			 data-blog-base-url="<?php echo esc_attr( $blog_base_url ); ?>"
 			 data-search-query="<?php echo esc_attr( $search_query ); ?>">
 			<div class="kpg-blog-pagination-numbers">
 				<?php foreach ( $pages as $page ) : ?>
 					<?php if ( isset( $page['is_separator'] ) && $page['is_separator'] ) : ?>
-						<div class="kpg-blog-pagination-separator"></div>
+						<span class="kpg-blog-pagination-separator" aria-hidden="true"></span>
 					<?php else : ?>
-						<span class="kpg-blog-pagination-item <?php echo ( $page['number'] === $current ) ? 'active' : 'inactive'; ?>" 
-							  data-page="<?php echo esc_attr( $page['number'] ); ?>">
+						<button class="kpg-blog-pagination-item <?php echo ( $page['number'] === $current ) ? 'active' : 'inactive'; ?>" 
+								type="button"
+								data-page="<?php echo esc_attr( $page['number'] ); ?>"
+								aria-label="<?php echo esc_attr( sprintf( __( 'Przejdź do strony %s', 'kpg-elementor-widgets' ), str_pad( $page['number'], 2, '0', STR_PAD_LEFT ) ) ); ?>"
+								<?php echo ( $page['number'] === $current ) ? 'aria-current="page"' : ''; ?>>
 							<?php echo str_pad( $page['number'], 2, '0', STR_PAD_LEFT ); ?>
-						</span>
+						</button>
 					<?php endif; ?>
 				<?php endforeach; ?>
 			</div>
-			<div class="kpg-blog-pagination-arrow <?php echo ( $current >= $max ) ? 'disabled' : ''; ?>" data-direction="next">
+			<button class="kpg-blog-pagination-arrow <?php echo ( $current >= $max ) ? 'disabled' : ''; ?>" type="button" data-direction="next" aria-label="<?php esc_attr_e( 'Następna strona', 'kpg-elementor-widgets' ); ?>" aria-disabled="<?php echo ( $current >= $max ) ? 'true' : 'false'; ?>" <?php disabled( $current >= $max ); ?>>
 				<svg xmlns="http://www.w3.org/2000/svg" width="40" height="32" viewBox="0 0 40 32" fill="none">
 					<path d="M20 24L28 16L20 8" stroke="#252B2B" stroke-width="1.33333" stroke-linecap="square"/>
 					<path d="M12 24L20 16L12 8" stroke="#252B2B" stroke-width="1.33333" stroke-linecap="square"/>
 				</svg>
-			</div>
-		</div>
+			</button>
+		</nav>
 		<?php
 	}
 

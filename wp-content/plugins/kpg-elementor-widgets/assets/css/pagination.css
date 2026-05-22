@@ -11,7 +11,6 @@
  * Desktop base: 1696px
  */
 
-@import '_kpg-colors.css';
 
 /* ============================================
    MOBILE STYLES (base: 375px)
@@ -47,7 +46,14 @@
   flex-basis: auto;
   position: relative;
   height: auto;
-  color: var(--kpg-text-inactive); /* #a3afb0 - inactive */
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
+  color: var(--kpg-text-secondary); /* stronger contrast for small text */
   font-family: "DM Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 4.2667vw; /* 16px / 375px */
   font-weight: 300;
@@ -79,8 +85,10 @@
   position: relative;
   width: 16vw; /* 60px / 375px */
   height: 8.5333vw; /* 32px / 375px */
+  padding: 0;
+  border: 0;
   border-radius: 2.1333vw; /* 8px / 375px */
-  background: var(--kpg-bg-gray); /* #E3EBEC */
+  background: var(--kpg-bg-gray) !important; /* #E3EBEC */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,7 +137,7 @@
     font-size: 0.9434vw; /* 16px / 1696px */
     line-height: 160%; /* 25.6px */
     text-transform: uppercase;
-    color: var(--kpg-text-inactive); /* #a3afb0 - inactive */
+    color: var(--kpg-text-secondary); /* stronger contrast for small text */
   }
 
   .kpg-blog-pagination-item:hover,
@@ -175,7 +183,7 @@
 
 /* Upewnij się, że elementy paginacji nie są linkami */
 .kpg-blog-pagination-item {
-  display: inline-block !important;
+  display: inline-flex !important;
 }
 
 /* Jeśli jakiś plugin/theme konwertuje na linki, zablokuj to */
@@ -207,4 +215,6 @@
   pointer-events: none;
 }
 
-
+.kpg-blog-pagination-item[aria-current="page"] {
+  cursor: default;
+}

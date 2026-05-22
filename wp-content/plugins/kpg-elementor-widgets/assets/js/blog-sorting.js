@@ -15,6 +15,18 @@
 (function($) {
 	'use strict';
 
+	function closeDropdown($dropdown) {
+		$dropdown.removeClass('active');
+		$dropdown.find('.kpg_sorting-button').attr('aria-expanded', 'false');
+		$dropdown.find('.kpg_sorting-menu').attr('aria-hidden', 'true');
+	}
+
+	function setDropdownState($dropdown, isExpanded) {
+		$dropdown.toggleClass('active', isExpanded);
+		$dropdown.find('.kpg_sorting-button').attr('aria-expanded', isExpanded ? 'true' : 'false');
+		$dropdown.find('.kpg_sorting-menu').attr('aria-hidden', isExpanded ? 'false' : 'true');
+	}
+
 	/**
 	 * Initialize sorting component
 	 */
@@ -47,24 +59,26 @@
 				$selectedText.text($options.filter('[data-sort="newest"]').text().trim());
 			}
 
+			closeDropdown($this);
+
+			$button.off('.kpgSorting');
+			$options.off('.kpgSorting');
+
 			// Toggle dropdown on button click
-			$button.on('click', function(e) {
+			$button.on('click.kpgSorting', function(e) {
 				e.stopPropagation();
 				
 				// Close all other dropdowns
-				$('.kpg_sorting-dropdown').not($this).removeClass('active');
+				$('.kpg_sorting-dropdown').not($this).each(function() {
+					closeDropdown($(this));
+				});
 				
 				// Toggle this dropdown
-				$this.toggleClass('active');
-				
-				// Update aria-expanded
-				var isExpanded = $this.hasClass('active');
-				$button.attr('aria-expanded', isExpanded);
-				$this.attr('aria-expanded', isExpanded);
+				setDropdownState($this, !$this.hasClass('active'));
 			});
 
 			// Handle option selection
-			$options.on('click', function(e) {
+			$options.on('click.kpgSorting', function(e) {
 				e.stopPropagation();
 				
 				var sortValue = $(this).data('sort');
@@ -75,8 +89,6 @@
 				
 				if ($loopGrid.length > 0) {
 					// Elementor loop detected - use AJAX to refresh
-					console.log('KPG Sorting: Elementor loop detected, sorting:', sortValue);
-					
 					// Update URL without reload
 					var url = new URL(window.location.href);
 					url.searchParams.set('sort', sortValue);
@@ -89,8 +101,7 @@
 					$(this).addClass('kpg_sorting-active');
 					
 					// Close dropdown
-					$this.removeClass('active');
-					$button.attr('aria-expanded', 'false');
+					closeDropdown($this);
 					
 					// Trigger page refresh to apply sorting
 					// (Elementor loop-grid will read ?sort= parameter on server side)
@@ -104,31 +115,28 @@
 				}
 			});
 
-			// Close dropdown when clicking outside
-			$(document).on('click', function(event) {
-				if (!$this.is(event.target) && $this.has(event.target).length === 0) {
-					$this.removeClass('active');
-					$button.attr('aria-expanded', 'false');
-					$this.attr('aria-expanded', 'false');
-				}
-			});
-
 			// Keyboard navigation
-			$button.on('keydown', function(e) {
+			$button.on('keydown.kpgSorting', function(e) {
 				// Enter or Space to toggle
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault();
 					$button.trigger('click');
 				}
+				// ArrowDown opens menu and moves focus to first option
+				else if (e.key === 'ArrowDown') {
+					e.preventDefault();
+					if (!$this.hasClass('active')) {
+						setDropdownState($this, true);
+					}
+					$options.first().focus();
+				}
 				// Escape to close
 				else if (e.key === 'Escape') {
-					$this.removeClass('active');
-					$button.attr('aria-expanded', 'false');
-					$this.attr('aria-expanded', 'false');
+					closeDropdown($this);
 				}
 			});
 
-			$options.on('keydown', function(e) {
+			$options.on('keydown.kpgSorting', function(e) {
 				// Enter or Space to select
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault();
@@ -136,9 +144,7 @@
 				}
 				// Escape to close
 				else if (e.key === 'Escape') {
-					$this.removeClass('active');
-					$button.attr('aria-expanded', 'false');
-					$this.attr('aria-expanded', 'false');
+					closeDropdown($this);
 					$button.focus();
 				}
 				// Arrow keys for navigation
@@ -158,6 +164,15 @@
 				}
 			});
 		});
+
+		$(document).off('click.kpgSorting').on('click.kpgSorting', function(event) {
+			$dropdown.each(function() {
+				var $this = $(this);
+				if (!$this.is(event.target) && $this.has(event.target).length === 0) {
+					closeDropdown($this);
+				}
+			});
+		});
 	};
 
 	// Initialize on page load
@@ -166,7 +181,11 @@
 	});
 
 	// Re-initialize for Elementor editor
-	if (typeof elementorFrontend !== 'undefined' && elementorFrontend.hooks) {
+	if (
+		typeof elementorFrontend !== 'undefined' &&
+		elementorFrontend.hooks &&
+		typeof elementorFrontend.hooks.addAction === 'function'
+	) {
 		elementorFrontend.hooks.addAction('frontend/element_ready/kpg-blog-sorting.default', function($scope) {
 			initSorting();
 		});
@@ -180,4 +199,3 @@
 	}
 
 })(jQuery);
-

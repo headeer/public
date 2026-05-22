@@ -148,20 +148,22 @@ class KPG_Elementor_Blog_Sorting_Widget extends Widget_Base {
 		// Get current sort from URL
 		$current_sort = isset( $_GET['sort'] ) ? sanitize_text_field( $_GET['sort'] ) : $settings['default_sort'];
 		$selected_text = ( $current_sort === 'oldest' ) ? $settings['option_oldest'] : $settings['option_newest'];
+		$button_id = 'kpg-sorting-button-' . $this->get_id();
+		$menu_id = 'kpg-sorting-menu-' . $this->get_id();
 		?>
 		<div class="kpg_sorting-container">
 			<div class="kpg_sorting-container-inner">
 				<div class="kpg_sorting-label-wrapper">
 					<span class="kpg_sorting-label"><?php echo esc_html( $settings['label_text'] ); ?></span>
 				</div>
-				<div class="kpg_sorting-dropdown" aria-expanded="false">
-					<button class="kpg_sorting-button" type="button" aria-expanded="false" aria-haspopup="true">
+				<div class="kpg_sorting-dropdown">
+					<button class="kpg_sorting-button" id="<?php echo esc_attr( $button_id ); ?>" type="button" aria-expanded="false" aria-haspopup="menu" aria-controls="<?php echo esc_attr( $menu_id ); ?>">
 						<span class="kpg_sorting-selected"><?php echo esc_html( $selected_text ); ?></span>
 						<svg class="kpg_sorting-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none" aria-hidden="true">
 							<path d="M0.63623 0.636719L6.63623 6.63672L12.6362 0.636719" stroke="#404848" stroke-width="1.8"/>
 						</svg>
 					</button>
-					<ul class="kpg_sorting-menu" role="menu" aria-label="<?php esc_attr_e( 'Sortowanie postów', 'kpg-elementor-widgets' ); ?>">
+					<ul class="kpg_sorting-menu" id="<?php echo esc_attr( $menu_id ); ?>" role="menu" aria-labelledby="<?php echo esc_attr( $button_id ); ?>" aria-hidden="true">
 						<li role="none">
 							<button class="kpg_sorting-option <?php echo ( $current_sort === 'newest' ) ? 'kpg_sorting-active' : ''; ?>" 
 									type="button" 
@@ -202,14 +204,14 @@ class KPG_Elementor_Blog_Sorting_Widget extends Widget_Base {
 				<div class="kpg_sorting-label-wrapper">
 					<span class="kpg_sorting-label">{{{ labelText }}}</span>
 				</div>
-				<div class="kpg_sorting-dropdown" aria-expanded="false">
-					<button class="kpg_sorting-button" type="button" aria-expanded="false" aria-haspopup="true">
+				<div class="kpg_sorting-dropdown">
+					<button class="kpg_sorting-button" type="button" aria-expanded="false" aria-haspopup="menu">
 						<span class="kpg_sorting-selected">{{{ selectedText }}}</span>
 						<svg class="kpg_sorting-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none" aria-hidden="true">
 							<path d="M0.63623 0.636719L6.63623 6.63672L12.6362 0.636719" stroke="#404848" stroke-width="1.8"/>
 						</svg>
 					</button>
-					<ul class="kpg_sorting-menu" role="menu">
+					<ul class="kpg_sorting-menu" role="menu" aria-label="Sortowanie postów" aria-hidden="true">
 						<li role="none">
 							<button class="kpg_sorting-option kpg_sorting-active" type="button" role="menuitem" data-sort="newest">
 								{{{ optionNewest }}}
@@ -227,7 +229,6 @@ class KPG_Elementor_Blog_Sorting_Widget extends Widget_Base {
 		<?php
 	}
 }
-
 
 
 
